@@ -15,6 +15,7 @@ import dicom2nifti
 sys.path.append("C:/Users/cbri3325/Anaconda3/lib/site-packages/platipy/__init__.py") # Path containing PlatiPy library
 from platipy.dicom.io.rtstruct_to_nifti import convert_rtstruct
 from platipy.dicom.io.rtdose_to_nifti import convert_rtdose
+from platipy.dicom.io.rtstruct_to_nifti import read_dicom_struct_file
 
 
 def DICOMseries_toNII(dcm_dir_path, nii_filepath, headers_filepath):
@@ -50,6 +51,8 @@ subjs_path = [ f.path for f in os.scandir(MRI_dir) if f.is_dir() ] #Create a lis
 subjs_name = [ f.name for f in os.scandir(MRI_dir) if f.is_dir() ] #Create a list of subjects names
 
 for current in subjs_name:
+    
+    print('for patient '+current)
 
     nifti_path_pt = os.path.join(nii_dir, current)
     if not os.path.exists(nifti_path_pt):
@@ -87,6 +90,8 @@ subjs_path = [ f.path for f in os.scandir(RT_dir) if f.is_dir() ] #Create a list
 subjs_name = [ f.name for f in os.scandir(RT_dir) if f.is_dir() ] #Create a list of subjects names
 
 for current in subjs_name:
+    
+    print('for patient '+current)
 
     nifti_path_pt = os.path.join(nii_dir, current)
     if not os.path.exists(nifti_path_pt):
@@ -111,7 +116,19 @@ for current in subjs_name:
     LET_dir = subj_dir+'/LET/'
     RBE_dir = subj_dir+'/LEM/'
     
+    #Check adn correct any label in RTSTRUCT that has '/' in the naming
+    rtstr = read_dicom_struct_file(RTSTRUCT_dir+'RTSTRUCT.dcm')
+    for i in rtstr.StructureSetROISequence:
+        ch = '/'
+        if ch in i.ROIName:
+            x = i.ROIName.replace(ch,'_')
+            i.ROIName = x
+    rtstr.save_as(RTSTRUCT_dir+'RTSTRUCT.dcm')
+    
+    #Convert RTSTRUCT
     convert_rtstruct(CT_dir, RTSTRUCT_dir+'RTSTRUCT.dcm', prefix='', output_dir=nii_RTSTRUCT_dir)
+    
+    #Convert Dose files
     convert_rtdose(PHYS_dir+'FROG_PHYS_1.dcm', False, nii_RTDOSE_dir+'/PHYS_v0.nii')
     convert_rtdose(PHYS_dir+'FROG_PHYS_2.dcm', False, nii_RTDOSE_dir+'/PHYS_v1.nii')
     convert_rtdose(LET_dir+'FROG_LETd_1.dcm', False, nii_RTDOSE_dir+'/LET1.nii')
