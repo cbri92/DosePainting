@@ -372,6 +372,11 @@ def generate_thresholded_roi(mask, low_thr, high_thr):
     return thr_roi  
     
 def set_mask_value(image, mask, value):
+    
+    '''Function that takes as input an image, a mask and a value, and returns the original 
+    image with the values of the pixels corresponding
+    to the binary mask set to the specified value.'''
+    
     msk32 = sitk.Cast(mask, sitk.sitkFloat32)
     return sitk.Cast(sitk.Cast(image, sitk.sitkFloat32) *
                      sitk.InvertIntensity(msk32, maximum=1.0) + 
