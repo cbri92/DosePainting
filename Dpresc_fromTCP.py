@@ -190,7 +190,7 @@ for current in subjs_name:
         
         sitk.WriteImage(dose_img, out_dir+'/Dose_optimised_CTV'+cell_type+'.nii') #Save the prescribed optimised dose image as a nifti file 
         
-    #%%Need to add: set values within CTV with cellularity untrusted and bone pixels to receive as min dose
+    #%%Set values within CTV with cellularity untrusted and bone pixels to receive as min dose
         
         CTV_complete = sitk.ReadImage(data_supradir+current+'/MRI/baseline/orig/CTV_inDWI_ITK.nii')
         CTV_remaining = (CTV_complete>0) & (dose_img==0)
