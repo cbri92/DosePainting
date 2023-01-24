@@ -4,7 +4,8 @@ Created on Tue Nov  8 12:31:51 2022
 
 @author: Caterina Brighi
 
-This script is used to ...
+This script is used to take information about cellularity, alpha and beta and use them
+to derive patient-specific dose prescriptions by means of a TCP model (poissonian, LQ).
 """
 
 
