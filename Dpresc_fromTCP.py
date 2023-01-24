@@ -3,6 +3,8 @@
 Created on Tue Nov  8 12:31:51 2022
 
 @author: Caterina Brighi
+
+This script is used to ...
 """
 
 
