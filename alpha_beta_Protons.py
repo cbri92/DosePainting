@@ -72,6 +72,10 @@ for current in subjs_name:
     #Read CT
     CT = sitk.ReadImage(subj_dir+'ct.nii')
     
+    #Apply the normalization to absolute LETd proton maps, to derive LETd values relative to the reference photon generated LETd values (e.g. ~0.3 keV μm−1 for 6 MV photon beams) as per McNamara et al. Med Phys, 2015 (page 8400). To achieve this normalisation, a value of 0.3 keV/um has to be subtracted from the absolute LETd proton values.
+    LET1=LET1-0.3
+    LET2=LET2-0.3
+       
     # #Mask the LET and PHYS maps to CTV
     # LET1 = generate_mask(LET1, CTV)
     # LET2 = generate_mask(LET2, CTV)

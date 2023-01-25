@@ -120,7 +120,7 @@ for current in subjs_name:
         # alpha = np.random.normal(0.30, 0.05, size=len(N0)) #Define array of values of alpha (radiosensitivity parameter)
         # beta = np.random.normal(0.15, 0.01, size=len(N0)) #Define array of values of beta (radiosensitivity parameter)
         
-        n=16 #Number of fractions
+        n=37 #Number of fractions
     
     #%%Optimization
         
