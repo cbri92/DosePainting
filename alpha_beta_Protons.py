@@ -82,7 +82,7 @@ for current in subjs_name:
     # PHYS1 = generate_mask(PHYS1, CTV)
     # PHYS2 = generate_mask(PHYS2, CTV)
     
-    #Calculate the dose-weighted LET map
+    # #Calculate the dose-weighted LET map
     LET = ((PHYS1*LET1)+(PHYS2*LET2))/(PHYS1+PHYS2) #From Matsumoto S, Lee SH, Imai R, Inaniwa T, Matsufuji N, Fukahori M, et al. Unresectable chondrosarcomas treated with carbon ion radiotherapy: Relationship between dose-averaged linear energy transfer and local recurrence. Anticancer Res. 2020;40(11):6429–35.
     
     #Resize dose-weighted LET to CT resolution
@@ -95,10 +95,10 @@ for current in subjs_name:
     
     # RBEmax = generate_mask(RBEmax, CTV)
     # RBEmin = generate_mask(RBEmin, CTV)
-    
+
     #%%Derive alpha and beta proton using estimates of RBEmax and RBEmin
-    alpha = (RBEmax*alpha_x)/LET
-    beta = (beta_x*(RBEmin**2))/LET
+    alpha = (RBEmax*alpha_x)
+    beta = (beta_x*(RBEmin**2))
     
     #Save alpha and beta maps
     sitk.WriteImage(alpha, subj_dir+'RTDOSE/alpha.nii')
