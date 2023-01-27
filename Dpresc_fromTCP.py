@@ -125,7 +125,7 @@ for current in subjs_name:
     #%%Optimization
         
         # for graphing below only
-        x_vals = np.arange(0,200)
+        x_vals = np.arange(0,100)
         #TCP Poisson model
         vals=[np.prod( np.exp( - N0 * np.exp(-alpha*x-(beta*(x**2))/n) )) for x in x_vals]
         
