@@ -88,7 +88,7 @@ for current in subjs_name:
                 if (('nii' in filename) and ('adc' not in filename)):
                     DWI_path = filename
             
-            DWI = sitk.ReadImage(DWI_path, sitk.sitkFloat32)
+            DWI = sitk.ReadImage(DWI_path, sitk.sitkFloat32) #need to only get 1 of the three images
             
             #Apply rigid body registration to register T2 image to DWI image
             T2inDWI, T2inDWI_tfm = RegisterResample_image(DWI, T2, 'same', 'Multires')

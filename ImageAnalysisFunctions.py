@@ -382,6 +382,66 @@ def set_mask_value(image, mask, value):
                      sitk.InvertIntensity(msk32, maximum=1.0) + 
                      msk32*value, image.GetPixelID())
 
+def subsample_image(image, dimension='t', index):
+    
+    '''Function that subsamples an image, by collpsing it in one dimension (specified) to the specified index.
+    
+        Input parameters:
+            image: sitk image
+            dimension: dimension to collapse, i.e. x, y, z, t
+            index: slice to take in the collapsed dimension
+            
+        Example: subsample a 3D image from a 4D image.
+            We have a image 4D = a 4x4x4x4 image, and we want to get a 3D image, 3D = a 4x4x4 image, 
+            specified as [x,y,z,2] from 4D (i.e. the 3rd "time" slice from 4D). 
+            The Size = [4,4,4,0] and Index = [0,0,0,2].'''
+            
+    img_size = image.GetSize()
+    
+    if len(img_size)==4:
+        
+        if dimension == 'x':
+            size=[0,img_size[1],img_size[2],img_size[3]]
+            idx=[index,0,0,0]
+        elif dimension == 'y':
+            size=[img_size[0],0,img_size[2],img_size[3]]
+            idx=[0,index,0,0]
+        elif dimension == 'z':
+            size=[img_size[0],img_size[1],0,img_size[3]]
+            idx=[0,0,index,0]
+        elif dimension == 't':
+            size=[img_size[0],img_size[1],img_size[2],0]       
+            idx=[0,0,0,index]
+            
+    elif len(img_size)==3:
+        
+        if dimension == 'x':
+            size=[0,img_size[1],img_size[2]]
+            idx=[index,0,0]
+        elif dimension == 'y':
+            size=[img_size[0],0,img_size[2]]
+            idx=[0,index,0]
+        elif dimension == 'z':
+            size=[img_size[0],img_size[1],0]
+            idx=[0,0,index]
+            
+    elif len(img_size)==2:
+        
+        if dimension == 'x':
+            size=[0,img_size[1]]
+            idx=[index,0]
+        elif dimension == 'y':
+            size=[img_size[0],0]
+            idx=[0,index]
+
+    Extractor = sitk.ExtractImageFilter()
+    Extractor.SetSize(size)
+    Extractor.SetIndex(idx)
+    Extracted = Extractor.Execute(image)
+    return Extracted
+        
+            
+
 #%% Generate smoothed image by applying a Gaussian smooth image filter
 
 def gauss_smooth(image, sigma):
