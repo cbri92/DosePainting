@@ -31,8 +31,7 @@ import math
 from scipy.stats import gaussian_kde
 import matplotlib.cm as cm
 import scipy.stats
-
-
+# import cv2
 
 
 def allVoxInt(image, roi):
@@ -330,3 +329,10 @@ def calculate_QF(Prescribed_dose_image, Planned_dose_image, roi):
     vector = allVoxInt(Rel_dose, roi)
     QF = 100 - mean(vector)*100
     return QF
+
+#%% Dice Similarity Coefficient
+
+def dice(pred, true, k = 1):
+    intersection = np.sum(pred[true==k]) * 2.0
+    dice = intersection / (np.sum(pred) + np.sum(true))
+    return dice

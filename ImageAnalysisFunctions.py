@@ -382,7 +382,7 @@ def set_mask_value(image, mask, value):
                      sitk.InvertIntensity(msk32, maximum=1.0) + 
                      msk32*value, image.GetPixelID())
 
-def subsample_image(image, dimension='t', index):
+def subsample_image(image, dimension, index):
     
     '''Function that subsamples an image, by collpsing it in one dimension (specified) to the specified index.
     
