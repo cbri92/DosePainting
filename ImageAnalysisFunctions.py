@@ -501,11 +501,11 @@ def getNonZeroStats(image):
     '''Calculates general stats of non-zero values from the image and returns them in a dictionary.
     The returned dictionary contains the follwoing parameters:
         'Volume [mm3]'
-        'Mean intensity [SUV]'
-        'Std of Mean [SUV]'
-        'Median intensity [SUV]'
-        'Max intensity [SUV]' 
-        'Min intensity [SUV]'
+        'Mean intensity'
+        'Std of Mean'
+        'Median intensity'
+        'Max intensity' 
+        'Min intensity'
         '''
     nda = sitk.GetArrayFromImage(image)
     volume = np.count_nonzero(nda)*image.GetSpacing()[0]*image.GetSpacing()[1]*image.GetSpacing()[2]
@@ -514,7 +514,7 @@ def getNonZeroStats(image):
     median = np.median(nda[np.nonzero(nda)])
     maxVal = np.amax(nda[np.nonzero(nda)])
     minVal = np.amin(nda[np.nonzero(nda)])
-    return {'Volume [mm3]':volume, 'Mean intensity [SUV]':mean, 'Std of Mean [SUV]': std, 'Median intensity [SUV]': median, 'Max intensity [SUV]':maxVal, 'Min intensity [SUV]':minVal}
+    return {'Volume [mm3]':volume, 'Mean intensity':mean, 'Std of Mean': std, 'Median intensity': median, 'Max intensity':maxVal, 'Min intensity':minVal}
 
 
 def Normalize(image):
