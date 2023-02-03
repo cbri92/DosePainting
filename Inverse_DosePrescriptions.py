@@ -17,19 +17,21 @@ import SimpleITK as sitk
 import os
 import glob
 from ImageAnalysisFunctions import *
-from ConvertNii_ToDoseFiles import *
+from ConvertNiftiImage_ToDoseFiles import *
 
 #%% Set Working directory
         
 data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SkullBaseChordoma_CNAO/' #Set working directory
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
-subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
-
+# subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
+# subjs_name.remove('AIRC24946_R052')
+subjs_name = ['AIRC24946_R029']
 #%%Create a for loop to perform image analysis on each subject sequentially
 
 for current in subjs_name:
-
+    
+    print('Creating inverse dose prescriptions for '+current)
     subj_dir = data_supradir+current
     subj_name = current
     
@@ -79,8 +81,8 @@ for current in subjs_name:
     #Read CTV and PTV   
     CTV = DP_origCT>0
     
-    for filename in glob.glob(subj_dir+'/RTSTRUCT/'+'*TV_*'):
-        if (('PTV_7' in filename) or ('PTV_high' in filename) or ('PTV_HD' in filename)):
+    for filename in glob.glob(subj_dir+'/RTSTRUCT/'+'*TV*'):
+        if (('PTV_7' in filename) or ('PTV7' in filename) or ('PTV_high' in filename) or ('PTV_HD' in filename)):
             PTV_path = filename
         # elif 'CTV_AIRC' in filename:
         #     CTV_path = filename
@@ -112,6 +114,6 @@ for current in subjs_name:
     sitk.WriteImage(Inv_DP_noBoneCT_inPTV, prsc_dir +'/Inv_DP_noBoneCT.nii')
     
     #Convert inverse dose prescriptions into dcm RT dose files
-    dcm_ref = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/dcm_ref/' #need to put path to dcm_ref series for each patient
-    convert_nii_to_dicom_RTdosefile(Inv_DP_origCT_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_origCT.dcm")
-    convert_nii_to_dicom_RTdosefile(Inv_DP_noBoneCT_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_noBoneCT.dcm")
+    dcm_ref = glob.glob(subj_dir+'/dcm_ref/'+'*.dcm')[0]
+    convert_nifti_to_dicom_RTdosefile(Inv_DP_origCT_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_origCT.dcm")
+    convert_nifti_to_dicom_RTdosefile(Inv_DP_noBoneCT_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_noBoneCT.dcm")
