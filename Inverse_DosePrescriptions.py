@@ -138,6 +138,6 @@ for current in subjs_name:
     convert_nii_to_dicom_RTdosefile(Inv_DP_noBoneCT_inPTV, ct_ref, output_directory=prsc_dir, out_filename="Inv_DP_noBone.dcm")
 
     # #Convert inverse dose prescriptions into dcm RT dose files using RTDOSE dicom file as reference dicom
-    # dcm_ref = glob.glob(subj_dir+'/dcm_ref/'+'*.dcm')[0]
+    # dcm_ref = glob.glob(subj_dir+'/RTDOSE_dcm_ref/'+'*.dcm')[0]
     # convert_nifti_to_dicom_RTdosefile(Inv_DP_origDOSE_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_orig.dcm")
     # convert_nifti_to_dicom_RTdosefile(Inv_DP_noBoneDOSE_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_noBone.dcm")
