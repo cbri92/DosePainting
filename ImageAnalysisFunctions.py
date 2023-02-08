@@ -143,13 +143,15 @@ def PET_preprocessing(subj_dir, subj_name):
     
 #%% Registration and resampling of images
     
-def Resample_image(input_image, reference_image):
+def Resample_image(input_image, reference_image, interpolator):
     
     '''Returns the input image resampled to the reference image space.
+        interpolator can be selected amongst: sitk.sitkLinear, sitk.sitkNearestNeighbor or sitk.sitkBSpline
        Remember to write the output image into an image file after applying this function'''
        
     resample = sitk.ResampleImageFilter()
     resample.SetReferenceImage(reference_image)   
+    resample.SetInterpolator(interpolator)
     output_image = resample.Execute(input_image)
     return output_image
 
@@ -331,7 +333,7 @@ def apply_tfm_to_roi(input_roi, reference_image, transform):
 
 #%% Generate additional rois
 
-def flip(roi):
+def flip_roi(roi):
     
     '''Returns roi flipped wrt the x axis. E.g. used to create mirror image roi in contralateral part of the body.
     Remember to save the flipped roi file after applying this function.'''
@@ -841,6 +843,21 @@ def rotation3d_point(point, image, theta_z):
     rotated_point = (euler_transform.TransformPoint(point))
     point2=(round(rotated_point[0]), round(rotated_point[1]), round(rotated_point[2]))
     return point2
+
+def flip_image(image, axis):
+    
+    '''Returns image flipped wrt the selected axis.
+    Remember to save the flipped image file after applying this function.'''
+    
+    if axis == 'x':
+        flipped = sitk.Flip(sitk.Cast(image, image.GetPixelID()), (True, False, False), False)
+    elif axis == 'y':
+        flipped = sitk.Flip(sitk.Cast(image, image.GetPixelID()), (False, True, False), False)
+    elif axis == 'z':
+        flipped = sitk.Flip(sitk.Cast(image, image.GetPixelID()), (False, False, True), False)
+    flipped.SetDirection(image.GetDirection())
+    flipped.SetOrigin(image.GetOrigin())
+    return flipped
 
 #%%Radiotherapy dose painting analysis functions
 

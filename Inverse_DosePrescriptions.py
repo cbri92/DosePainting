@@ -17,16 +17,17 @@ import SimpleITK as sitk
 import os
 import glob
 from ImageAnalysisFunctions import *
-from ConvertNiftiImage_ToDoseFiles import *
+# from ConvertNiftiImage_ToDoseFiles import * #Use this functions only when using the dicom RTDOSE file as reference dicom
+from ConvertNii_ToDoseFiles import * #Use this functions only when using the dicom CT series file as reference dicom
 
 #%% Set Working directory
         
 data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SkullBaseChordoma_CNAO/' #Set working directory
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
-# subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
-# subjs_name.remove('AIRC24946_R052')
-subjs_name = ['AIRC24946_R029']
+subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
+subjs_name.remove('AIRC24946_R052')
+# subjs_name=['AIRC24946_R029']
 #%%Create a for loop to perform image analysis on each subject sequentially
 
 for current in subjs_name:
@@ -46,6 +47,7 @@ for current in subjs_name:
     
     #Read CT image
     CT = sitk.ReadImage(subj_dir+'/ct.nii')
+    # DOSE = sitk.ReadImage(subj_dir+'/RTDOSE/PHYS_v0.nii')
     
     #Read dose prescription images
     DP_origDWI = sitk.ReadImage(dose_dir +'/Dose_optimised_CTVorig_final.nii')
@@ -64,7 +66,7 @@ for current in subjs_name:
     #Apply inverse transform to Dose prescriptions to bring them in CT space from DWI space
     DP_origCT = sitk.Resample(DP_origDWI, CT, inverse_transform, sitk.sitkNearestNeighbor)
     DP_noBoneCT = sitk.Resample(DP_noBoneDWI, CT, inverse_transform, sitk.sitkNearestNeighbor)
-    
+   
     #Calculate Max and Min dose prescription values
     Stats_dose_orig = getNonZeroStats(DP_origCT)
     MAX_dose_orig = int(Stats_dose_orig['Max intensity'])
@@ -106,14 +108,36 @@ for current in subjs_name:
     Inv_DP_origCT_inPTV = set_mask_value(Inv_DP_origCT_inCTV, margin, (MAX_dose_orig-MIN_dose_orig))
     Inv_DP_noBoneCT_inPTV = set_mask_value(Inv_DP_noBoneCT_inCTV, margin, (MAX_dose_noBone-MIN_dose_noBone))
     
-    #Write dose prescriptions and inverse dose prescriptions    
-    sitk.WriteImage(DP_origCT_inPTV, prsc_dir +'/DP_origCT.nii')
-    sitk.WriteImage(DP_noBoneCT_inPTV, prsc_dir +'/DP_noBoneCT.nii')
+    # #Resample dose prescriptions in dose space
+    # DP_origDOSE_inPTV = Resample_image(DP_origCT_inPTV, DOSE, sitk.sitkNearestNeighbor)
+    # DP_noBoneDOSE_inPTV = Resample_image(DP_noBoneCT_inPTV, DOSE, sitk.sitkNearestNeighbor)
     
-    sitk.WriteImage(Inv_DP_origCT_inPTV, prsc_dir +'/Inv_DP_origCT.nii')
-    sitk.WriteImage(Inv_DP_noBoneCT_inPTV, prsc_dir +'/Inv_DP_noBoneCT.nii')
+    # Inv_DP_origDOSE_inPTV = Resample_image(Inv_DP_origCT_inPTV, DOSE, sitk.sitkNearestNeighbor)
+    # Inv_DP_noBoneDOSE_inPTV = Resample_image(Inv_DP_noBoneCT_inPTV, DOSE, sitk.sitkNearestNeighbor)
     
-    #Convert inverse dose prescriptions into dcm RT dose files
-    dcm_ref = glob.glob(subj_dir+'/dcm_ref/'+'*.dcm')[0]
-    convert_nifti_to_dicom_RTdosefile(Inv_DP_origCT_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_origCT.dcm")
-    convert_nifti_to_dicom_RTdosefile(Inv_DP_noBoneCT_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_noBoneCT.dcm")
+    #Write dose prescriptions and inverse dose prescriptions        
+    sitk.WriteImage(DP_origCT_inPTV, prsc_dir +'/DP_orig.nii')
+    sitk.WriteImage(DP_noBoneCT_inPTV, prsc_dir +'/DP_noBone.nii')
+    
+    sitk.WriteImage(Inv_DP_origCT_inPTV, prsc_dir +'/Inv_DP_orig.nii')
+    sitk.WriteImage(Inv_DP_noBoneCT_inPTV, prsc_dir +'/Inv_DP_noBone.nii')
+    
+    # sitk.WriteImage(DP_origDOSE_inPTV, prsc_dir +'/DP_orig.nii')
+    # sitk.WriteImage(DP_noBoneDOSE_inPTV, prsc_dir +'/DP_noBone.nii')
+    
+    # sitk.WriteImage(Inv_DP_origDOSE_inPTV, prsc_dir +'/Inv_DP_orig.nii')
+    # sitk.WriteImage(Inv_DP_noBoneDOSE_inPTV, prsc_dir +'/Inv_DP_noBone.nii')
+    
+    #Convert inverse dose prescriptions into dcm RT dose files using CT dicom series as reference dicom
+        #First we need to flip the inverse prescriptins wrt y axis, as the dii2nii algo used originally to convert all the images flipped this wrt to original dicom images
+    Inv_DP_origCT_inPTV = flip_image(Inv_DP_origCT_inPTV, 'y')
+    Inv_DP_noBoneCT_inPTV = flip_image(Inv_DP_noBoneCT_inPTV, 'y')
+
+    ct_ref = subj_dir+'/CT/' #Path to directory of CT dicom series
+    convert_nii_to_dicom_RTdosefile(Inv_DP_origCT_inPTV, ct_ref, output_directory=prsc_dir, out_filename="Inv_DP_orig.dcm")
+    convert_nii_to_dicom_RTdosefile(Inv_DP_noBoneCT_inPTV, ct_ref, output_directory=prsc_dir, out_filename="Inv_DP_noBone.dcm")
+
+    # #Convert inverse dose prescriptions into dcm RT dose files using RTDOSE dicom file as reference dicom
+    # dcm_ref = glob.glob(subj_dir+'/dcm_ref/'+'*.dcm')[0]
+    # convert_nifti_to_dicom_RTdosefile(Inv_DP_origDOSE_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_orig.dcm")
+    # convert_nifti_to_dicom_RTdosefile(Inv_DP_noBoneDOSE_inPTV, dcm_ref, output_directory=prsc_dir, out_filename="Inv_DP_noBone.dcm")
