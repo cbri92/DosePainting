@@ -43,7 +43,9 @@ def dose_calc(array, LL, UL):
     """
     return (UL - LL)*array + LL
 
-
+#Set alpha and beta particle-cell line specific values
+a = 
+b = 
 #%% Set Working directory
         
 data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SkullBaseChordoma_CNAO/' #Set working directory
@@ -114,8 +116,11 @@ for current in subjs_name:
         cell_dens = allVoxInt(cell_map, CTV_final) #Define array of values with cellular density>0
         N0 = cell_dens*voxel_volume #Multiply the values of cellular density per voxel by the volume of one voxel to obtain the number of cells per voxel
         
-        alpha = allVoxInt(alpha_map, CTV_final) #Define array of values with alpha
-        beta = allVoxInt(beta_map, CTV_final) #Define array of values with beta
+        alpha=np.full(len(N0), a, dtype=np.float32)
+        beta=np.full(len(N0), b, dtype=np.float32)
+        
+        # alpha = allVoxInt(alpha_map, CTV_final) #Define array of values with alpha
+        # beta = allVoxInt(beta_map, CTV_final) #Define array of values with beta
         
         # alpha = np.random.normal(0.30, 0.05, size=len(N0)) #Define array of values of alpha (radiosensitivity parameter)
         # beta = np.random.normal(0.15, 0.01, size=len(N0)) #Define array of values of beta (radiosensitivity parameter)
