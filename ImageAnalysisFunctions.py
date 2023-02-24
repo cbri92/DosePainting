@@ -566,6 +566,16 @@ def getStatsRoi(roi, image):
     minVal = stats.GetMinimum(1)
     return {'Volume [mm3]':volume, 'Mean intensity [SUV]':mean, 'Std of Mean [SUV]': std, 'Median intensity [SUV]': median, 'Max intensity [SUV]':maxVal, 'Min intensity [SUV]':minVal}
 
+
+def getVolumeRoi(roi, image):
+    
+    '''Calculate the volume of the roi in mm3.'''
+    stats = sitk.LabelIntensityStatisticsImageFilter()
+    stats.Execute(roi, image)
+    volume = stats.GetPhysicalSize(1)
+    return volume
+
+
 def getMaxRoi(roi, image):
     
     '''Calculates max intensity value from the roi applied on the image and returns it as a float'''

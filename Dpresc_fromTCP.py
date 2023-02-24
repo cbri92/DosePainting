@@ -43,9 +43,20 @@ def dose_calc(array, LL, UL):
     """
     return (UL - LL)*array + LL
 
-#Set alpha and beta particle-cell line specific values
-a = 
-b = 
+#%%Set alpha and beta particle-cell line specific values
+
+#Set alpha/beta photons
+alpha_beta_x = 2.4 #Gy for chordomas
+alpha_x = 0.1 #Gy-1
+beta_x = alpha_x/alpha_beta_x #Gy-2
+
+#Values RBEmax and RBEmin for proton on chordoma cells taken from paper Paganetti, International Journal of Radiation Oncology*Biology*Physics, 2022, 112(1), 222-236.
+
+RBEmax = 1.59
+RBEmin = 1.18
+
+a = (RBEmax*alpha_x)
+b = (beta_x*(RBEmin**2))
 #%% Set Working directory
         
 data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SkullBaseChordoma_CNAO/' #Set working directory
@@ -78,15 +89,15 @@ for current in subjs_name:
         # cell_map = cell_map*(10**12) #Convert cell map to Units: cm-3
         
         if cell_dir == data_supradir+current+'/MRI/baseline/orig/':
-            alpha_map = sitk.ReadImage(subj_dir+'alpha_CTVinDWI.nii') 
-            beta_map = sitk.ReadImage(subj_dir+'beta_CTVinDWI.nii') 
+            # alpha_map = sitk.ReadImage(subj_dir+'alpha_CTVinDWI.nii') 
+            # beta_map = sitk.ReadImage(subj_dir+'beta_CTVinDWI.nii') 
         
             CTV_full = sitk.ReadImage(cell_dir+'CTV_inDWI_ITK.nii') #Read CTV
             # CTV.SetOrigin(cell_map.GetOrigin())
             
         elif cell_dir == data_supradir+current+'/MRI/baseline/noBone/':
-            alpha_map = sitk.ReadImage(subj_dir+'alpha_CTVinDWI_noBone.nii') 
-            beta_map = sitk.ReadImage(subj_dir+'beta_CTVinDWI_noBone.nii')
+            # alpha_map = sitk.ReadImage(subj_dir+'alpha_CTVinDWI_noBone.nii') 
+            # beta_map = sitk.ReadImage(subj_dir+'beta_CTVinDWI_noBone.nii')
         
             CTV_full = sitk.ReadImage(cell_dir+'CTV_inDWI_noBone.nii') #Read CTV
                        
