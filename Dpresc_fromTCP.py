@@ -63,6 +63,7 @@ data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/C
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
 subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
+subjs_name.remove('AIRC24946_R052')
 
 #%%Create a for loop to perform image analysis on each subject sequentially
 
@@ -73,21 +74,21 @@ for current in subjs_name:
         os.mkdir(data_supradir+current+'/MRI/baseline/Prescribed_dose')
     out_dir = data_supradir+current+'/MRI/baseline/Prescribed_dose'
     
+    #Unzip cellApp_CORRECTED.nii.gz file and delete original gzipped file
+    for filename in glob.glob(data_supradir+current+'/MRI/baseline/orig/' +'cellApp_CORRECTED.nii.gz'):
+        gunzip_shutil(filename, filename[:-3])
+     
+    print('Optimizing the dose prescription for '+current) 
+              
+    cell_map = sitk.ReadImage(data_supradir+current+'/MRI/baseline/orig/cellApp_CORRECTED.nii') #Read cellular density map. Units: um-3
+    cell_map = cell_map*(10**8) #Convert cell map to Units: 10^4 cm-3
+    # cell_map = cell_map*(10**12) #Convert cell map to Units: cm-3
+    
     cell_dirs = [data_supradir+current+'/MRI/baseline/orig/',data_supradir+current+'/MRI/baseline/noBone/']
     cell_types = ['orig', 'noBone']
     
     for cell_dir, cell_type in zip(cell_dirs,cell_types):
 
-        #Unzip cellApp_CORRECTED.nii.gz file and delete original gzipped file
-        for filename in glob.glob(cell_dir +'cellApp_CORRECTED.nii.gz'):
-            gunzip_shutil(filename, filename[:-3])
-     
-        print('Optimizing the dose prescription for '+current) 
-              
-        cell_map = sitk.ReadImage(cell_dir+'cellApp_CORRECTED.nii') #Read cellular density map. Units: um-3
-        cell_map = cell_map*(10**8) #Convert cell map to Units: 10^4 cm-3
-        # cell_map = cell_map*(10**12) #Convert cell map to Units: cm-3
-        
         if cell_dir == data_supradir+current+'/MRI/baseline/orig/':
             # alpha_map = sitk.ReadImage(subj_dir+'alpha_CTVinDWI.nii') 
             # beta_map = sitk.ReadImage(subj_dir+'beta_CTVinDWI.nii') 
@@ -100,6 +101,15 @@ for current in subjs_name:
             # beta_map = sitk.ReadImage(subj_dir+'beta_CTVinDWI_noBone.nii')
         
             CTV_full = sitk.ReadImage(cell_dir+'CTV_inDWI_noBone.nii') #Read CTV
+            
+            cell_map=sitk.ReadImage(data_supradir+current+'/MRI/baseline/orig/cellApp_CORRECTED.nii')
+            cell_map=generate_mask(cell_map, CTV_full)
+            cell_map = cell_map*(10**8)
+            sitk.WriteImage(cell_map, cell_dir+'cellApp_CORRECTED.nii')
+            
+            ctv_ok=sitk.ReadImage(data_supradir+current+'/MRI/baseline/orig/ctv_voxel_ok_3D.nii.gz', sitk.sitkUInt8)
+            ctv_ok=(CTV_full+ctv_ok)>1
+            sitk.WriteImage(ctv_ok, cell_dir+'ctv_voxel_ok_3D.nii.gz')
                        
         CTV = sitk.ReadImage(cell_dir+'ctv_voxel_ok_3D.nii.gz')
         CTV = sitk.Cast(CTV, sitk.sitkUInt8)
@@ -209,11 +219,12 @@ for current in subjs_name:
         
         sitk.WriteImage(dose_img, out_dir+'/Dose_optimised_CTV'+cell_type+'.nii') #Save the prescribed optimised dose image as a nifti file 
         
-    #%%Set values within CTV with cellularity untrusted and bone pixels to receive as min dose
+    #%%Set values within CTV with cellularity untrusted and bone pixels to receive as mean dose
         
         CTV_complete = sitk.ReadImage(data_supradir+current+'/MRI/baseline/orig/CTV_inDWI_ITK.nii')
         CTV_remaining = (CTV_complete>0) & (dose_img==0)
-        dose_img_final = set_mask_value(dose_img, CTV_remaining, MIN_DOSE)
+        mean_dose=(MAX_DOSE+MIN_DOSE)/2
+        dose_img_final = set_mask_value(dose_img, CTV_remaining, mean_dose)
         sitk.WriteImage(dose_img_final, out_dir+'/Dose_optimised_CTV'+cell_type+'_final.nii')
         
         

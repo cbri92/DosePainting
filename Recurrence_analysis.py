@@ -54,12 +54,12 @@ for current in subjs_name:
     struct_dir = subj_dir+'/RTSTRUCT'
     
     #Read std dose, DP presc, PTV and recurrence contours
-    Std_dose = sitk.ReadImage(dose_dir+'/PHYS_TOT.nii') #Read std dose image
+    Std_dose = sitk.ReadImage(dose_dir+'/RBE_TOT.nii') #Read std dose image
     DPresc = sitk.ReadImage(presc_dir+'/DP_noBone.nii') #Read dose prescription image   
     # Rec = sitk.ReadImage(struct_dir+'/rec_per_ricerca.nii') #Read recurrence contour
     
     for filename in glob.glob(subj_dir+'/RTSTRUCT/'+'*TV*'):
-        if (('PTV_7' in filename) or ('PTV7' in filename) or ('PTV_high' in filename) or ('PTV_HD' in filename)):
+        if (('PTV_5' in filename) or ('PTV5' in filename) or ('PTV_3' in filename) or ('PTV_low' in filename) or ('PTV_LD' in filename)):
             PTV_path = filename
 
     PTV = sitk.ReadImage(PTV_path) #read PTV

@@ -71,20 +71,22 @@ for current in subjs_name:
     Stats_dose_orig = getNonZeroStats(DP_origCT)
     MAX_dose_orig = int(Stats_dose_orig['Max intensity'])
     MIN_dose_orig = int(Stats_dose_orig['Min intensity'])
+    MEAN_dose_orig = int(Stats_dose_orig['Mean intensity'])
     
     Stats_dose_noBone = getNonZeroStats(DP_noBoneCT)
     MAX_dose_noBone = int(Stats_dose_noBone['Max intensity'])
     MIN_dose_noBone = int(Stats_dose_noBone['Min intensity'])
+    MEAN_dose_noBone = int(Stats_dose_noBone['Mean intensity'])
     
     #Generate inverse dose prescription as Dinv = Dmax - Dpresc, where Dmax = maximum dose estimated for each patient
     Inv_DP_origCT = MAX_dose_orig-DP_origCT
     Inv_DP_noBoneCT = MAX_dose_noBone-DP_noBoneCT
     
-    #Read CTV and PTV   
+    #Read CTV and PTV LD
     CTV = DP_origCT>0
     
-    for filename in glob.glob(subj_dir+'/RTSTRUCT/'+'*TV*'):
-        if (('PTV_7' in filename) or ('PTV7' in filename) or ('PTV_high' in filename) or ('PTV_HD' in filename)):
+    for filename in glob.glob(subj_dir+'/RTSTRUCT/'+'PTV*'):
+        if (('PTV_5' in filename) or ('PTV5' in filename) or ('PTV_3' in filename) or ('PTV_low' in filename) or ('PTV_LD' in filename)):
             PTV_path = filename
         # elif 'CTV_AIRC' in filename:
         #     CTV_path = filename
@@ -102,11 +104,11 @@ for current in subjs_name:
     Inv_DP_noBoneCT_inCTV = generate_mask(Inv_DP_noBoneCT, CTV)
     
     #Assign min dose prescription to all voxels in margins CTV-PTV, where min dose is the minimum dose estimated for each patient
-    DP_origCT_inPTV = set_mask_value(DP_origCT_inCTV, margin, MIN_dose_orig)
-    DP_noBoneCT_inPTV = set_mask_value(DP_noBoneCT_inCTV, margin, MIN_dose_noBone)    
+    DP_origCT_inPTV = set_mask_value(DP_origCT_inCTV, margin, MEAN_dose_orig)
+    DP_noBoneCT_inPTV = set_mask_value(DP_noBoneCT_inCTV, margin, MEAN_dose_noBone)    
     
-    Inv_DP_origCT_inPTV = set_mask_value(Inv_DP_origCT_inCTV, margin, (MAX_dose_orig-MIN_dose_orig))
-    Inv_DP_noBoneCT_inPTV = set_mask_value(Inv_DP_noBoneCT_inCTV, margin, (MAX_dose_noBone-MIN_dose_noBone))
+    Inv_DP_origCT_inPTV = set_mask_value(Inv_DP_origCT_inCTV, margin, (MAX_dose_orig-MEAN_dose_orig))
+    Inv_DP_noBoneCT_inPTV = set_mask_value(Inv_DP_noBoneCT_inCTV, margin, (MAX_dose_noBone-MEAN_dose_noBone))
     
     # #Resample dose prescriptions in dose space
     # DP_origDOSE_inPTV = Resample_image(DP_origCT_inPTV, DOSE, sitk.sitkNearestNeighbor)

@@ -501,7 +501,7 @@ def getNonZeroImageSTD(image):
 def getNonZeroStats(image):
     
     '''Calculates general stats of non-zero values from the image and returns them in a dictionary.
-    The returned dictionary contains the follwoing parameters:
+    The returned dictionary contains the following parameters:
         'Volume [mm3]'
         'Mean intensity'
         'Std of Mean'
