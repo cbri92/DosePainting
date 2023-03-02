@@ -43,7 +43,7 @@ p2 = 1.1012
 p3 = -0.0038703
 
 #Set alpha/beta photons
-alpha_beta_x = 2 #Gy for chordomas
+alpha_beta_x = 2.4 #Gy for chordomas
 alpha_x = 0.1 #Gy-1
 beta_x = alpha_x/alpha_beta_x #Gy-2
 
