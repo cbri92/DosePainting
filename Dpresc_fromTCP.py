@@ -208,7 +208,7 @@ for current in subjs_name:
         plt.close()
         
     #%% Saving the optimised dose values into a prescription dose image
-    
+        
         dose_nda = np.ndarray(shape=orig_shape) #Generate a 3D array of the same shape of the cell density map
         
         for d,i in zip(list(Dopt),listOfCoordinates): #Assign the calculated optimised dose to each voxel, based on the index of the corresponding cellularity voxel
