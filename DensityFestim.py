@@ -99,7 +99,7 @@ for current in subjs_name:
     ax.set_xlabel('N of cells/voxel')
     fig.legend(['PDF', 'CDF'], loc=1)
     plt.show()
-    plt.savefig(out_dir+'/PDF_CDF_N_plot.jpg')
+    fig.savefig(out_dir+'/PDF_CDF_N_plot.jpg', bbox_inches='tight')
     plt.close()
     
     
@@ -128,7 +128,7 @@ for current in subjs_name:
     ax2.set_ylabel('Probability density function')
     ax.set_xlabel('N of cells/voxel')
     plt.show()
-    plt.savefig(out_dir+'/PDF_DOSE_N_plot.jpg')
+    plt.savefig(out_dir+'/PDF_DOSE_N_plot.jpg', bbox_inches='tight')
     plt.close()
     
   #%% Saving the optimised dose values into a prescription dose image

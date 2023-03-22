@@ -41,7 +41,7 @@ for current in subjs_name:
         elif (('CTV_39.6.nii.gz' in filename) or ('CTV39.6' in filename) or ('CTV_41.4' in filename) or ('CTV_43.2' in filename) or ('CTV_bassa' in filename) or ('CTV_LD.nii.gz' in filename) or ('CTVLD' in filename) or ('CTV_low' in filename)):
             CTV_path = filename
             print(CTV_path)
-        elif (('PTV_39.6.nii.gz' in filename) or ('PTV39.6' in filename) or ('PTV_41.4' in filename) or ('PTV_43.2' in filename) or ('PTV_bassa' in filename) or ('PTV_LD.nii.gz' in filename) or ('PTVLD' in filename) or ('PTV_low' in filename)):
+        elif (('PTV_39.6' in filename) or ('PTV39.6' in filename) or ('PTV_41.4' in filename) or ('PTV_43.2' in filename) or ('PTV_bassa' in filename) or ('PTV_LD.nii.gz' in filename) or ('PTVLD' in filename) or ('PTV_low' in filename)):
             PTV_path = filename
             print(PTV_path)
     
@@ -129,7 +129,7 @@ for current in subjs_name:
                 DWI = subsample_image(dwi,'t',1)
                 
                 #Resample T2 in DWI space
-                T2inDWI = Resample_image(T2, DWI) #Resample in DWI space
+                T2inDWI = Resample_image(T2, DWI, sitk.sitkLinear) #Resample in DWI space
                 sitk.WriteImage(T2inDWI, regIm_dir+'/T2onDWI.nii') #Save registered image in regImages directory
                 
                 # #Apply rigid body registration to register T2 image to DWI image
@@ -138,7 +138,7 @@ for current in subjs_name:
                 # sitk.WriteTransform(T2inDWI_tfm, reg_dir+'/xf_T2onDWI.txt') #Save registration matrix in regFiles directory
                 
                 #%%Resample CT, GTV, CTV and PTV in DWI
-                CTinDWI = Resample_image(CTinT2, DWI) #Resample in DWI space
+                CTinDWI = Resample_image(CTinT2, DWI, sitk.sitkLinear) #Resample in DWI space
                 GTVinDWI = Resample_roi(GTVinT2, DWI) #Resample in DWI space
                 CTVinDWI = Resample_roi(CTVinT2, DWI) #Resample in DWI space
                 PTVinDWI = Resample_roi(PTVinT2, DWI) #Resample in DWI space

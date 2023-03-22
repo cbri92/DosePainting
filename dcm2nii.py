@@ -116,7 +116,7 @@ for current in subjs_name:
     LET_dir = subj_dir+'/LET/'
     RBE_dir = subj_dir+'/LEM/'
     
-    #Check adn correct any label in RTSTRUCT that has '/' in the naming
+    #Check and correct any label in RTSTRUCT that has '/' in the naming
     rtstr = read_dicom_struct_file(RTSTRUCT_dir+'RTSTRUCT.dcm')
     for i in rtstr.StructureSetROISequence:
         ch = '/'
