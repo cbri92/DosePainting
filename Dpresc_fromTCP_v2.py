@@ -198,9 +198,9 @@ for current in subjs_name:
     N_dmax = max(pdf_vals)[1]
     dose = transfer_func(N0, Dmin, Dmax, N_dmax)
     
-    #Set values of dose > 80 Gy to 80 Gy as max dose limit deliverable to brain
-    super_threshold_indices = dose > 80
-    dose[super_threshold_indices] = 80
+    #Set values of dose > 81.4 Gy to 81.4 Gy as 110% of dose delivered to HD target volume in boost plans
+    super_threshold_indices = dose > 81.4
+    dose[super_threshold_indices] = 81.4
     
     
     #%%Plot the PDF and derived dose values as function of cellularity

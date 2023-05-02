@@ -84,20 +84,26 @@ for current in subjs_name:
                         
     PTV_HD = sitk.ReadImage(PTV_HD_path) #read PTV HD
     
+    #%%Mask Dose prescription in PTV LD
+    DP_noBoneCT = generate_mask(DP_noBoneCT, PTV_LD)
+    sitk.WriteImage(DP_noBoneCT, prsc_dir +'/DP_noBone_inCT.nii')
+    
     #%%Generate HD and LD margins
     
     Valid_presc = DP_noBoneCT>0
-    HD_margin = (PTV_HD-Valid_presc)>0
-    LD_margin = (PTV_LD-PTV_HD)
+    valid_in_HD = generate_mask(Valid_presc, PTV_HD)
+    HD_margin = (PTV_HD-valid_in_HD)>0
+    margin = (PTV_LD-PTV_HD)>0
+    valid_in_LD = generate_mask(Valid_presc, margin)
+    LD_margin = (margin-valid_in_LD)>0
     sitk.WriteImage(HD_margin, prsc_dir+'/HD_margin.nii')
     sitk.WriteImage(LD_margin, prsc_dir+'/LD_margin.nii')
     
-    #%%Generate mask of dose prescriptions and inverse dose prescriptions in CTV    
-    DP_noBoneCT_inCTV = generate_mask(DP_noBoneCT, Valid_presc)    
+    #%%Mask inverse dose prescriptions only in voxels with valid dose prescription     
     Inv_DP_noBoneCT_inCTV = generate_mask(Inv_DP_noBoneCT, Valid_presc)
     
     #%%Assign 74 Gy to all voxels in HD_margins, and 54 Gy to all voxels in LD_margins
-    DP_noBoneCT_inPTV = set_mask_value(DP_noBoneCT_inCTV, HD_margin, 74)  
+    DP_noBoneCT_inPTV = set_mask_value(DP_noBoneCT, HD_margin, 74)  
     DP_noBoneCT_inPTV = set_mask_value(DP_noBoneCT_inPTV, LD_margin, 54)
     
     Inv_DP_noBoneCT_inPTV = set_mask_value(Inv_DP_noBoneCT_inCTV, HD_margin, (MAX_dose_noBone-74))

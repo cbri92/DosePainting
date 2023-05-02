@@ -110,17 +110,17 @@ for current in subjs_name:
     sitk.WriteImage(Iso95_LD, struct_dir+'/Iso95_LD.nii')
     
     #Calculate margins between Iso95 HD and LD conturs
-    Iso95_HDLD_margins = (Iso95_HD+Iso95_LD)<2
+    Iso95_HDLD_margins = (Iso95_LD-Iso95_HD)>0
     sitk.WriteImage(Iso95_HDLD_margins, struct_dir+'/Iso95_HDLD_margins.nii')
     
     #Calculate % volume of recurrence in Iso95 HD contour
-    Rec_inIso95HD = (Rec+Iso95_HD)
+    Rec_inIso95HD = (Rec+Iso95_HD)>1
     sitk.WriteImage(Rec_inIso95HD, struct_dir+'/Rec_inIso95HD.nii')
     Vol_Rec95HD = round(getVolumeRoi(Rec_inIso95HD, Std_dose))
     Perc_Rec95HD = (Vol_Rec95HD/Vol_Rec)*100
     
     #Calculate % volume of recurrence in Iso95 HDLD margins
-    Rec_inIso95margins = (Rec+Iso95_HDLD_margins)
+    Rec_inIso95margins = (Rec+Iso95_HDLD_margins)>1
     sitk.WriteImage(Rec_inIso95margins, struct_dir+'/Rec_inIso95margins.nii')
     Vol_Rec95margins = round(getVolumeRoi(Rec_inIso95margins, Std_dose))
     Perc_Rec95margins = (Vol_Rec95margins/Vol_Rec)*100
