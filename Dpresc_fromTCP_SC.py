@@ -82,8 +82,9 @@ def transfer_func(X, Dmin, Dmax, N_dmax):
 #Values a and b carbon derived from plots in Fig 4 of paper Kato et al. International Journal of Radiation Oncology*Biology*Physics, 2011.
 #Derivation in script Carbon_a_B_estimates.py
 
-a = 0.950148844306803
-a_std = 0.142982098449624
+a = 0.19
+# a = 0.950148844306803
+# a_std = 0.142982098449624
 # b = 0.0677197997438524
 # b_std = 0.0538530499689479
 # a_b_carbon = a/b
@@ -94,6 +95,8 @@ data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/C
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
 subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
+subjs_name.remove('P32')
+subjs_name.remove('P50')
 
 #%%Create a for loop to perform image analysis on each subject sequentially
 
@@ -175,12 +178,12 @@ for current in subjs_name:
             alpha=np.full(len(N0), a, dtype=np.float32)
             # beta=np.full(len(N0), b, dtype=np.float32)
             
-            # n=16 #Number of fractions in HD volume, while 9 fcn in LD volume
+            # n=16 #Number of fractions in HD volume, while 9 fcn only in LD volume
         
         #%%Find the patient specific Dmax corresponding to the 99th percentile of the TCP
             
             # for graphing below only
-            x_vals = np.arange(0,100)
+            x_vals = np.arange(0,150)
             #TCP Poisson model
             # vals=[np.prod( np.exp( - N0 * np.exp(-alpha*x-(beta*(x**2))/n) )) for x in x_vals]
             vals=[np.prod( np.exp( - N0 * np.exp(-alpha*x))) for x in x_vals]
