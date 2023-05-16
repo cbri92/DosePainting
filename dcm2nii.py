@@ -104,10 +104,10 @@ for current in subjs_name:
     nii_RTSTRUCT_dir = os.path.join(nifti_path_pt, 'RTSTRUCT')
     if not os.path.exists(nii_RTSTRUCT_dir):
         os.mkdir(nii_RTSTRUCT_dir)
-        
+    
     subj_dir = RT_dir+current #Set path to subject directory 
     
-    CT_dir = subj_dir+'/CT'
+    CT_dir = subj_dir+'/CT/'
     DICOMseries_toNII(CT_dir, nifti_path_pt+'/ct', nifti_path_pt+'/ct')
     # dicom2nifti.convert_dicom.dicom_series_to_nifti(CT_dir,nifti_path_pt+'/ct.nii') 
                   
