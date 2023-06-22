@@ -12,6 +12,7 @@ from ImageAnalysisFunctions import Resample_image
 from ImageStatisticsFunctions import allVoxInt
 import pandas as pd
 import math
+import glob
 
 #%%Define constants
 
@@ -65,7 +66,7 @@ def find_D_98(RBE, GTV):
         D_98 = dose delivered to 98% of GTV volume (float)'''
     
     x = allVoxInt(RBE, GTV) #This function calculates a 2D flat array of the dose for each voxel within the 3D structure
-    voxInBin = math.floor(0.02*len(x)) #number of voxels in each bin as 2% of the GTV volume
+    voxInBin = math.floor(0.01*len(x)) #number of voxels in each bin as 2% of the GTV volume
     n_bins = round(len(x)/voxInBin)
     counts, bin_edges = np.histogram(x, bins=n_bins, range=(0, x.max()), normed=None, weights=None, density=False)
     histcum = 100*(1 - np.cumsum(counts)/len(x)) #cumulative histogram values: y axis
@@ -78,13 +79,39 @@ def find_D_98(RBE, GTV):
     
     return D_98
 
+def find_D_95(RBE, GTV):
+    
+    '''This function finds D_95 given a RBE dose file and a GTV volume.
+    
+    Inputs:        
+        RBE = Relative biological dose image. sitk Image
+        GTV = gross tumour volume. sitk Image
+    
+    Output:
+        D_95 = dose delivered to 95% of GTV volume (float)'''
+    
+    x = allVoxInt(RBE, GTV) #This function calculates a 2D flat array of the dose for each voxel within the 3D structure
+    voxInBin = math.floor(0.01*len(x)) #number of voxels in each bin as 2% of the GTV volume
+    n_bins = round(len(x)/voxInBin)
+    counts, bin_edges = np.histogram(x, bins=n_bins, range=(0, x.max()), normed=None, weights=None, density=False)
+    histcum = 100*(1 - np.cumsum(counts)/len(x)) #cumulative histogram values: y axis
+    dvh_dict = {'Dose [Gy]': bin_edges[:-1], 'Relative Volume [%]': histcum}
+    DVH_df = pd.DataFrame(data=dvh_dict)    
+    df_closest = DVH_df.iloc[(DVH_df['Relative Volume [%]']-95).abs().argsort()[:1]]
+    Vol_95 = df_closest['Relative Volume [%]'].tolist()[0]
+    D_95 = df_closest['Dose [Gy]'].tolist()[0]
+    print('Relative Volume [%]: '+str(Vol_95)+ ' and Dose [Gy]: '+str(D_95))
+    
+    return D_95
+
 data_dir='C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SacralChordoma_CNAO/nifti/'
 
 Results = pd.ExcelWriter('C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SacralChordoma_CNAO/DVH_info.xlsx')
-dvh_df = pd.DataFrame(columns=['Patient_ID', 'N0', 'D_98% [Gy]', 'Dlq [Gy]'])
+dvh_df = pd.DataFrame(columns=['Patient_ID', 'N0', 'D_98% [Gy]', 'Dlq [Gy]', 'D_95% [Gy]'])
 
 subjs_path = [f.path for f in os.scandir(data_dir) if f.is_dir()] #Create a list of the paths to the subjects directories
 subjs_name = [f.name for f in os.scandir(data_dir) if f.is_dir()] #Create a list of subjects names
+subjs_name.remove('P50')
 
 n_subj = len(subjs_name) #Total number of subjects
 
@@ -97,21 +124,32 @@ for current in subjs_name:
      
     print(current) 
 
-    # Read rbe images and generate rbe tot image
-    rbe_0 = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_v0.nii')
-    rbe_1 = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_v1.nii')
-    RBE_tot = rbe_0+rbe_1
-    sitk.WriteImage(RBE_tot, subj_dir + '/RTDOSE/RBE_tot.nii')
+    # # Read rbe images and generate rbe tot image
+    # rbe_0 = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_v0.nii')
+    # rbe_1 = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_v1.nii')
+    # RBE_tot = rbe_0+rbe_1
+    # sitk.WriteImage(RBE_tot, subj_dir + '/RTDOSE/RBE_tot.nii')
     
-    # Resample RBE_tot image into ct resolution
+    # # Resample RBE_tot image into ct resolution
     ct = sitk.ReadImage(subj_dir + '/ct.nii')
-    RBE = Resample_image(RBE_tot, ct, sitk.sitkLinear)
-    sitk.WriteImage(RBE, subj_dir + '/RTDOSE/RBE_inCT.nii')
+    # RBE = Resample_image(RBE_tot, ct, sitk.sitkLinear)
+    # sitk.WriteImage(RBE, subj_dir + '/RTDOSE/RBE_inCT.nii')
+    
+    #Read RBE in CT
+    RBE = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_inCT.nii')
     
     # Read GTV image  
     GTV = sitk.ReadImage(subj_dir + '/RTSTRUCT/GTV.nii.gz')
     GTV.SetOrigin(ct.GetOrigin())
     GTV.SetDirection(ct.GetDirection())
+    
+    # for filename in glob.glob(subj_dir+'/RTSTRUCT/'+'CTV*'):
+    #     if (('CTV_LD.nii' in filename) or ('CTV_low_dose.nii' in filename) or ('CTV_39.6.nii' in filename)):
+    #         CTV_LD_path = filename
+                        
+    # GTV = sitk.ReadImage(CTV_LD_path) #read PTV LD
+    # GTV.SetOrigin(ct.GetOrigin())
+    # GTV.SetDirection(ct.GetDirection())
     
     # Calculate D_98
     D_98 = find_D_98(RBE,GTV)
@@ -122,8 +160,11 @@ for current in subjs_name:
     # Calculate N0
     N0 = find_N0(r0, GTV)
     
+    # Calculate D_95
+    D_95 = find_D_95(RBE,GTV)
+    
     #Save stats in dataframe
-    dvh_dict={'Patient_ID':current, 'N0':N0, 'D_98% [Gy]':D_98, 'Dlq [Gy]':Dlq}
+    dvh_dict={'Patient_ID':current, 'N0':N0, 'D_98% [Gy]':D_98, 'Dlq [Gy]':Dlq, 'D_95% [Gy]':D_95}
     dvh_df = dvh_df.append(dvh_dict, ignore_index=True)
     
 #%%On local control patients
@@ -144,31 +185,42 @@ for current in subjs_name:
      
     print(current) 
 
-    # Read rbe images and generate rbe tot image
-    rbe_0 = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_v0.nii')
-    rbe_1 = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_v1.nii')
+    # # Read rbe images and generate rbe tot image
+    # rbe_0 = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_v0.nii')
+    # rbe_1 = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_v1.nii')
     
-    if rbe_0.GetSpacing()[0] != rbe_1.GetSpacing()[0]:
-        print('Different spacing')
-        if rbe_0.GetSpacing()[0] > rbe_1.GetSpacing()[0]:
-            print('rbe_0 is greater than rbe_1')
-            rbe_1 = Resample_image(rbe_1, rbe_0, sitk.sitkLinear)
-        elif rbe_0.GetSpacing()[0] < rbe_1.GetSpacing()[0]:
-            print('rbe_1 is greater than rbe_0')
-            rbe_0 = Resample_image(rbe_0, rbe_1, sitk.sitkLinear)
+    # if rbe_0.GetSpacing()[0] != rbe_1.GetSpacing()[0]:
+    #     print('Different spacing')
+    #     if rbe_0.GetSpacing()[0] > rbe_1.GetSpacing()[0]:
+    #         print('rbe_0 is greater than rbe_1')
+    #         rbe_1 = Resample_image(rbe_1, rbe_0, sitk.sitkLinear)
+    #     elif rbe_0.GetSpacing()[0] < rbe_1.GetSpacing()[0]:
+    #         print('rbe_1 is greater than rbe_0')
+    #         rbe_0 = Resample_image(rbe_0, rbe_1, sitk.sitkLinear)
     
-    RBE_tot = rbe_0+rbe_1
-    sitk.WriteImage(RBE_tot, subj_dir + '/RTDOSE/RBE_tot.nii')
+    # RBE_tot = rbe_0+rbe_1
+    # sitk.WriteImage(RBE_tot, subj_dir + '/RTDOSE/RBE_tot.nii')
     
-    # Resample RBE_tot image into ct resolution
+    # # Resample RBE_tot image into ct resolution
     ct = sitk.ReadImage(subj_dir + '/ct.nii')
-    RBE = Resample_image(RBE_tot, ct, sitk.sitkLinear)
-    sitk.WriteImage(RBE, subj_dir + '/RTDOSE/RBE_inCT.nii')
+    # RBE = Resample_image(RBE_tot, ct, sitk.sitkLinear)
+    # sitk.WriteImage(RBE, subj_dir + '/RTDOSE/RBE_inCT.nii')
+    
+    #Read RBE in CT
+    RBE = sitk.ReadImage(subj_dir + '/RTDOSE/RBE_inCT.nii')
     
     # Read GTV image  
     GTV = sitk.ReadImage(subj_dir + '/RTSTRUCT/GTV.nii.gz')
     GTV.SetOrigin(ct.GetOrigin())
     GTV.SetDirection(ct.GetDirection())
+    
+    # for filename in glob.glob(subj_dir+'/RTSTRUCT/'+'CTV*'):
+    #     if (('CTV_LD.nii' in filename) or ('CTV_low_dose.nii' in filename) or ('CTV_39.6.nii' in filename) or ('CTV_LD_MARGIN.nii' in filename) or ('CTV_41.4.nii' in filename) or ('CTV_9_fx.nii' in filename) or ('CTVLDno.nii' in filename) or ('CTV1_9fx.nii' in filename)):
+    #         CTV_LD_path = filename
+                        
+    # GTV = sitk.ReadImage(CTV_LD_path) #read PTV LD
+    # GTV.SetOrigin(ct.GetOrigin())
+    # GTV.SetDirection(ct.GetDirection())
     
     # Calculate D_98
     D_98 = find_D_98(RBE,GTV)
@@ -179,8 +231,11 @@ for current in subjs_name:
     # Calculate N0
     N0 = find_N0(r0, GTV)
     
+    # Calculate D_95
+    D_95 = find_D_95(RBE,GTV)
+    
     #Save stats in dataframe
-    dvh_dict={'Patient_ID':current, 'N0':N0, 'D_98% [Gy]':D_98, 'Dlq [Gy]':Dlq}
+    dvh_dict={'Patient_ID':current, 'N0':N0, 'D_98% [Gy]':D_98, 'Dlq [Gy]':Dlq, 'D_95% [Gy]':D_95}
     dvh_df = dvh_df.append(dvh_dict, ignore_index=True)
     
     

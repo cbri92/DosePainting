@@ -82,7 +82,7 @@ def transfer_func(X, Dmin, Dmax, N_dmax):
 #Values a and b carbon derived from plots in Fig 4 of paper Kato et al. International Journal of Radiation Oncology*Biology*Physics, 2011.
 #Derivation in script Carbon_a_B_estimates.py
 
-a = 0.19
+a = 0.3626439540025473
 # a = 0.950148844306803
 # a_std = 0.142982098449624
 # b = 0.0677197997438524
@@ -95,9 +95,7 @@ data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/C
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
 subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
-subjs_name.remove('P32')
-subjs_name.remove('P50')
-
+# subjs_name = ['P29', 'P39', 'P41', 'P45', 'P50']
 #%%Create a for loop to perform image analysis on each subject sequentially
 
 for current in subjs_name:
@@ -195,112 +193,112 @@ for current in subjs_name:
             MIN_DOSE = x_vals[TCP>0.01][0]
             print('MIN DOSE', MIN_DOSE)
             
-            # #Plot the TCP vs Dose
-            # plt.plot(x_vals,TCP)
-            # plt.plot([MAX_DOSE,MAX_DOSE],[0,1])
-            # plt.plot([MIN_DOSE,MIN_DOSE],[0,1])
-            # plt.legend(['TCP','Max dose value: '+str(MAX_DOSE), 'Min dose value: '+str(MIN_DOSE)], loc ="upper left")
-            # plt.xlabel("Dose (Gy)")
-            # plt.ylabel("TCP")
-            # plt.savefig(out_dir+'/TCP_dose_plot_'+cell_type+'.jpg', bbox_inches='tight')
-            # plt.show()
+            #Plot the TCP vs Dose
+            plt.plot(x_vals,TCP)
+            plt.plot([MAX_DOSE,MAX_DOSE],[0,1])
+            plt.plot([MIN_DOSE,MIN_DOSE],[0,1])
+            plt.legend(['TCP','Max dose value: '+str(MAX_DOSE), 'Min dose value: '+str(MIN_DOSE)], loc ="upper left")
+            plt.xlabel("Dose (Gy)")
+            plt.ylabel("TCP")
+            plt.savefig(out_dir+'/TCP_dose_plot_'+cell_type+'.jpg', bbox_inches='tight')
+            plt.show()
         
-            # #Plot the probability density function vs dose
-            # plt.plot(x_vals[:-1],np.diff(TCP))
-            # plt.plot([MAX_DOSE,MAX_DOSE],[0,max(np.diff(TCP))])
-            # plt.plot([MIN_DOSE,MIN_DOSE],[0,max(np.diff(TCP))])
-            # plt.legend(['PDF','Max dose value: '+str(MAX_DOSE), 'Min dose value: '+str(MIN_DOSE)], loc ="upper left")
-            # plt.xlabel("Dose (Gy)")
-            # plt.ylabel("Probability density")
-            # plt.savefig(out_dir+'/PDF_dose_plot_'+cell_type+'.jpg', bbox_inches='tight')
-            # plt.show()
+            #Plot the probability density function vs dose
+            plt.plot(x_vals[:-1],np.diff(TCP))
+            plt.plot([MAX_DOSE,MAX_DOSE],[0,max(np.diff(TCP))])
+            plt.plot([MIN_DOSE,MIN_DOSE],[0,max(np.diff(TCP))])
+            plt.legend(['PDF','Max dose value: '+str(MAX_DOSE), 'Min dose value: '+str(MIN_DOSE)], loc ="upper left")
+            plt.xlabel("Dose (Gy)")
+            plt.ylabel("Probability density")
+            plt.savefig(out_dir+'/PDF_dose_plot_'+cell_type+'.jpg', bbox_inches='tight')
+            plt.show()
             
-        # #%% Way of interpolating dose to obtain heterogeneous dose plan, such that to target higher dose to more radioresistant regions, whilst sparing dose to radiosensitive tissue (and surrounding healthy tissues)
+        #%% Way of interpolating dose to obtain heterogeneous dose plan, such that to target higher dose to more radioresistant regions, whilst sparing dose to radiosensitive tissue (and surrounding healthy tissues)
         
-        #     #%%Plot the probability density function vs n cells x vox
+            #%%Plot the probability density function vs n cells x vox
         
-        #     plt.hist(N0, bins=200, density=True)
-        #     plt.xlabel("N Cells per voxel")
-        #     plt.ylabel("Probability density function")
-        #     plt.savefig(out_dir+'/N_cells_histo_'+cell_type+'.jpg', bbox_inches='tight')
-        #     plt.show()
-        #     plt.close()
+            plt.hist(N0, bins=200, density=True)
+            plt.xlabel("N Cells per voxel")
+            plt.ylabel("Probability density function")
+            plt.savefig(out_dir+'/N_cells_histo_'+cell_type+'.jpg', bbox_inches='tight')
+            plt.show()
+            plt.close()
             
-        #     #%%Plot the PDF and CDF
-        #     fig, ax = plt.subplots()
-        #     kde=stats.gaussian_kde(N0) #Estimate kernel density function
-        #     X = np.linspace(0, max(N0)*1.1, 200)
-        #     PDF = kde(X) #Calculate the PDF from the estimated kde, in the range of cellularity values available for this patient
-        #     CDF = cdf_kde(X) #Calculate the cumulative density function from the estimated kde, in the range of cellularity values available for this patient
-        #     ax2 = ax.twinx()
-        #     ax2.fill_between(X, CDF, fc="#53e686", alpha=0.5)
-        #     ax.fill_between(X, PDF, fc="#AAAAFF")
-        #     ax.set_ylabel('Probability density function')
-        #     ax2.set_ylabel('Cumulative density function')
-        #     ax.set_xlabel('N of cells/voxel')
-        #     fig.legend(['PDF', 'CDF'], loc=1)
-        #     plt.show()
-        #     fig.savefig(out_dir+'/PDF_CDF_N_'+cell_type+'_plot.jpg', bbox_inches='tight')
-        #     plt.close()      
+            #%%Plot the PDF and CDF
+            fig, ax = plt.subplots()
+            kde=stats.gaussian_kde(N0) #Estimate kernel density function
+            X = np.linspace(0, max(N0)*1.1, 200)
+            PDF = kde(X) #Calculate the PDF from the estimated kde, in the range of cellularity values available for this patient
+            CDF = cdf_kde(X) #Calculate the cumulative density function from the estimated kde, in the range of cellularity values available for this patient
+            ax2 = ax.twinx()
+            ax2.fill_between(X, CDF, fc="#53e686", alpha=0.5)
+            ax.fill_between(X, PDF, fc="#AAAAFF")
+            ax.set_ylabel('Probability density function')
+            ax2.set_ylabel('Cumulative density function')
+            ax.set_xlabel('N of cells/voxel')
+            fig.legend(['PDF', 'CDF'], loc=1)
+            plt.show()
+            fig.savefig(out_dir+'/PDF_CDF_N_'+cell_type+'_plot.jpg', bbox_inches='tight')
+            plt.close()      
             
-        #     #%%Map values of cellularity to values of dose
-        #     Dmin, Dmax = 39.6, MAX_DOSE #Assign minimum and maximum values of dose to assign to voxels with lowest value of cellularity and mode (most frequent) values of cellularity, respectively. These for us are 39.6 Gy (corresponding to dose assigned to CTV_low dose) and MAX_DOSE, specific to the patient.
-        #     pdf_vals = tuple(zip(kde(X), X))
-        #     N_dmax = max(pdf_vals)[1]
-        #     dose = transfer_func(N0, Dmin, Dmax, N_dmax)
+            #%%Map values of cellularity to values of dose
+            Dmin, Dmax = 39.6, MAX_DOSE #Assign minimum and maximum values of dose to assign to voxels with lowest value of cellularity and mode (most frequent) values of cellularity, respectively. These for us are 39.6 Gy (corresponding to dose assigned to CTV_low dose) and MAX_DOSE, specific to the patient.
+            pdf_vals = tuple(zip(kde(X), X))
+            N_dmax = max(pdf_vals)[1]
+            dose = transfer_func(N0, Dmin, Dmax, N_dmax)
             
-        #     #Set values of dose > 80.96 Gy to 80.96 Gy as 110% of dose delivered to HD target volume in boost plans
-        #     super_threshold_indices = dose > 80.96
-        #     dose[super_threshold_indices] = 80.96
+            #Set values of dose > 80.96 Gy to 80.96 Gy as 110% of dose delivered to HD target volume in boost plans
+            super_threshold_indices = dose > 80.96
+            dose[super_threshold_indices] = 80.96
             
             
-        #     #%%Plot the PDF and derived dose values as function of cellularity
-        #     fig, ax = plt.subplots()
-        #     plt.scatter(N0, dose, marker='x')
-        #     ax2 = ax.twinx()
-        #     ax.plot([N_dmax,N_dmax],[Dmin, max(dose)], 'k--')
-        #     ax.plot([0,max(N0)],[Dmax, Dmax], 'k--')
-        #     ax.annotate('Max Dose {0}'.format(Dmax), (max(N0)*0.7, Dmax*1.02))
-        #     ax.annotate('mode of N density {0}'.format(int(N_dmax)), (N_dmax*1.1, Dmin*1.02))
-        #     ax2.fill_between(X, PDF, fc="#AAAAFF", alpha=0.5)
-        #     ax.set_ylabel('Dose [Gy]')
-        #     ax2.set_ylabel('Probability density function')
-        #     ax.set_xlabel('N of cells/voxel')
-        #     fig.savefig(out_dir+'/PDF_DOSE_N_'+cell_type+'_plot.jpg', bbox_inches='tight')
-        #     plt.show()
-        #     plt.close()
+            #%%Plot the PDF and derived dose values as function of cellularity
+            fig, ax = plt.subplots()
+            plt.scatter(N0, dose, marker='x')
+            ax2 = ax.twinx()
+            ax.plot([N_dmax,N_dmax],[Dmin, max(dose)], 'k--')
+            ax.plot([0,max(N0)],[Dmax, Dmax], 'k--')
+            ax.annotate('Max Dose {0}'.format(Dmax), (max(N0)*0.7, Dmax*1.02))
+            ax.annotate('mode of N density {0}'.format(int(N_dmax)), (N_dmax*1.1, Dmin*1.02))
+            ax2.fill_between(X, PDF, fc="#AAAAFF", alpha=0.5)
+            ax.set_ylabel('Dose [Gy]')
+            ax2.set_ylabel('Probability density function')
+            ax.set_xlabel('N of cells/voxel')
+            fig.savefig(out_dir+'/PDF_DOSE_N_'+cell_type+'_plot.jpg', bbox_inches='tight')
+            plt.show()
+            plt.close()
             
-        #     #%% Compare new TCP with TCP that would be obtained by deliverying an homogeneous dose boost to the GTV to maximum dose estimated in the optimization
-        #     # TCP_heter =np.prod( np.exp( - N0 * np.exp(-alpha*dose-(beta*(dose**2))/n))) #TCP obtained with optimised heterogeneous dose distribution
-        #     # TCP_boost = np.prod( np.exp( - N0 * np.exp(-alpha*Dmax-(beta*(Dmax**2))/n))) # TCP with optimised homogeneous max dose boost to entire GTV
-        #     TCP_heter =np.prod( np.exp( - N0 * np.exp(-alpha*dose))) #TCP obtained with optimised heterogeneous dose distribution
-        #     TCP_boost = np.prod( np.exp( - N0 * np.exp(-alpha*Dmax)))# TCP with optimised homogeneous max dose boost to entire GTV
-        #     print('TCP optimised heterogeneous dose plan: ',TCP_heter)
-        #     print('TCP optimised homogeneous max dose boost plan: ',TCP_boost)
+            #%% Compare new TCP with TCP that would be obtained by deliverying an homogeneous dose boost to the GTV to maximum dose estimated in the optimization
+            # TCP_heter =np.prod( np.exp( - N0 * np.exp(-alpha*dose-(beta*(dose**2))/n))) #TCP obtained with optimised heterogeneous dose distribution
+            # TCP_boost = np.prod( np.exp( - N0 * np.exp(-alpha*Dmax-(beta*(Dmax**2))/n))) # TCP with optimised homogeneous max dose boost to entire GTV
+            TCP_heter =np.prod( np.exp( - N0 * np.exp(-alpha*dose))) #TCP obtained with optimised heterogeneous dose distribution
+            TCP_boost = np.prod( np.exp( - N0 * np.exp(-alpha*Dmax)))# TCP with optimised homogeneous max dose boost to entire GTV
+            print('TCP optimised heterogeneous dose plan: ',TCP_heter)
+            print('TCP optimised homogeneous max dose boost plan: ',TCP_boost)
             
-        #     plt.hist(dose, bins=20)
-        #     plt.xlabel("Dose (Gy)")
-        #     plt.ylabel("Counts")
-        #     plt.savefig(out_dir+'/Dose_histo_'+cell_type+'.jpg', bbox_inches='tight')
-        #     plt.show()
-        #     plt.close()
+            plt.hist(dose, bins=20)
+            plt.xlabel("Dose (Gy)")
+            plt.ylabel("Counts")
+            plt.savefig(out_dir+'/Dose_histo_'+cell_type+'.jpg', bbox_inches='tight')
+            plt.show()
+            plt.close()
             
-        # #%% Saving the optimised dose values into a prescription dose image
+        #%% Saving the optimised dose values into a prescription dose image
             
-        #     dose_nda = np.ndarray(shape=orig_shape) #Generate a 3D array of the same shape of the cell density map
+            dose_nda = np.ndarray(shape=orig_shape) #Generate a 3D array of the same shape of the cell density map
             
-        #     for d,i in zip(list(dose),listOfCoordinates): #Assign the calculated optimised dose to each voxel, based on the index of the corresponding cellularity voxel
-        #         dose_nda[i]=d
+            for d,i in zip(list(dose),listOfCoordinates): #Assign the calculated optimised dose to each voxel, based on the index of the corresponding cellularity voxel
+                dose_nda[i]=d
         
-        #     dose_img = sitk.GetImageFromArray(dose_nda) #Convert the numpy array into an image 
-        #     dose_img.CopyInformation(cell_map) #Copy the headers of the cellularity image onto the headers of the optimised dose image
+            dose_img = sitk.GetImageFromArray(dose_nda) #Convert the numpy array into an image 
+            dose_img.CopyInformation(cell_map) #Copy the headers of the cellularity image onto the headers of the optimised dose image
             
-        #     sitk.WriteImage(dose_img, out_dir+'/Dose_optimised_CTV'+cell_type+'.nii') #Save the prescribed optimised dose image as a nifti file 
+            sitk.WriteImage(dose_img, out_dir+'/Dose_optimised_CTV'+cell_type+'.nii') #Save the prescribed optimised dose image as a nifti file 
             
-        # #%%Set values within CTV with cellularity untrusted and bone pixels to receive Dmin = 54 Gy
+        #%%Set values within CTV with cellularity untrusted and bone pixels to receive Dmin = 54 Gy
             
-        #     # CTV_complete = sitk.ReadImage(data_supradir+current+'/MRI/baseline/orig/CTV_inDWI_ITK.nii')
-        #     # CTV_remaining = (CTV_complete>0) & (dose_img==0)
-        #     # dose_img_final = set_mask_value(dose_img, CTV_remaining, Dmin)
-        #     # sitk.WriteImage(dose_img_final, out_dir+'/Dose_optimised_CTV'+cell_type+'_final54.nii')
+            # CTV_complete = sitk.ReadImage(data_supradir+current+'/MRI/baseline/orig/CTV_inDWI_ITK.nii')
+            # CTV_remaining = (CTV_complete>0) & (dose_img==0)
+            # dose_img_final = set_mask_value(dose_img, CTV_remaining, Dmin)
+            # sitk.WriteImage(dose_img_final, out_dir+'/Dose_optimised_CTV'+cell_type+'_final54.nii')
             
