@@ -17,7 +17,6 @@ data_dir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Cateri
 
 subjs_path = [f.path for f in os.scandir(data_dir) if f.is_dir()] #Create a list of the paths to the subjects directories
 subjs_name = [f.name for f in os.scandir(data_dir) if f.is_dir()] #Create a list of subjects names
-subjs_name.remove('AIRC24946_R012')
 
 n_subj = len(subjs_name) #Total number of subjects
 

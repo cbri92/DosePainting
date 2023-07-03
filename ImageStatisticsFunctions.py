@@ -327,6 +327,7 @@ def calculate_QF(Prescribed_dose_image, Planned_dose_image, roi):
     
     Rel_dose = abs((Planned_dose_image-Prescribed_dose_image)/Prescribed_dose_image)
     vector = allVoxInt(Rel_dose, roi)
+    vector=vector[np.isfinite(vector)]
     QF = 100 - mean(vector)*100
     return QF
 

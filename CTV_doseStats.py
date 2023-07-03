@@ -54,7 +54,7 @@ data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/C
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
 subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
-
+# subjs_name=['AIRC24946_R012']
 
 #Create an excel spreadsheet with the stats results
 Results = pd.ExcelWriter(data_supradir +'Dose_stats_results.xlsx')
@@ -88,7 +88,7 @@ for current in subjs_name:
     PHYS = sitk.ReadImage(subj_dir+'RTDOSE/PHYS_TOT.nii')
     PHYS = Resample_image(PHYS, CT, sitk.sitkLinear)
     sitk.WriteImage(PHYS, subj_dir+'RTDOSE/PHYS_TOTinCT.nii')
-    Dp = sitk.ReadImage(subj_dir+'RTPRESC/DP_noBone_CfBoost.nii')
+    Dp = sitk.ReadImage(subj_dir+'Dose_painted/DP_dose_reorient.nii')
     
     #Extract stats from Phys and Dpresc in CTV
     RBE_stats = getStatsRoi(CTV,RBE)
@@ -107,5 +107,5 @@ for current in subjs_name:
     
 RBE_stats_df.to_excel(Results, sheet_name='RBE stats', index=False)
 PHYS_stats_df.to_excel(Results, sheet_name='PHYS DOSE stats', index=False)
-Dp_stats_df.to_excel(Results, sheet_name='Dose presc stats', index=False)
+Dp_stats_df.to_excel(Results, sheet_name='Dose painting plan stats', index=False)
 Results.save()

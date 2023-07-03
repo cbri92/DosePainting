@@ -31,12 +31,13 @@ data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/C
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
 subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a lisdt of subjects names
+# subjs_name=['AIRC24946_R012']
 
 #Generate excel file containing voxelwise results
 Results = pd.ExcelWriter(data_supradir +'Recurrence_analysis.xlsx')
 
 #Create an empty dataframe to populate as going through the loop
-df = pd.DataFrame(columns=['Subject_ID', '% Vol of recurrence in PTV', 'Mean std dose in targeted recurrence volume [Gy]', 'Max std dose in targeted recurrence volume [Gy]', 'Mean DP dose in targeted recurrence volume [Gy]', 'Max DP dose in targeted recurrence volume [Gy]', '% vol of recurrence within PTV_HD receiving 95% of prescribed HD', '% vol of recurrence within PTV_LD receiving 95% of prescribed LD'])
+df = pd.DataFrame(columns=['Subject_ID', '% Vol of recurrence in PTV', 'Mean std dose in targeted recurrence volume [Gy]', 'Max std dose in targeted recurrence volume [Gy]', 'Mean DP dose in targeted recurrence volume [Gy]', 'Max DP dose in targeted recurrence volume [Gy]', '% vol of recurrence within PTV_HD receiving 95% of prescribed HD', '% vol of recurrence within PTV_LD receiving 95% of prescribed LD', '% vol of recurrence within PTV_HDLD margins receiving 95% of prescribed dose'])
 
 #%%Create a for loop to perform image analysis on each subject sequentially
 
@@ -48,12 +49,12 @@ for current in subjs_name:
     
     #Set path to directories
     dose_dir = subj_dir+'/RTDOSE'
-    presc_dir = subj_dir+'/RTPRESC'
+    DP_dir = subj_dir+'/Dose_painted'
     struct_dir = subj_dir+'/RTSTRUCT'
     
     #Read std dose, DP presc, PTV and recurrence contours
-    Std_dose = sitk.ReadImage(dose_dir+'/RBE_TOT.nii') #Read std dose image
-    DPresc = sitk.ReadImage(presc_dir+'/DP_noBone_CfBoost.nii') #Read dose prescription image   
+    Std_dose = sitk.ReadImage(dose_dir+'/RBEdoseinCT.nii') #Read std dose image
+    DP_dose = sitk.ReadImage(DP_dir+'/DP_dose_reorient.nii') #Read dose prescription image   
     # Rec = sitk.ReadImage(struct_dir+'/rec_per_ricerca.nii') #Read recurrence contour
     
     for filename in glob.glob(subj_dir+'/RTSTRUCT/'+'PTV*'):
@@ -79,7 +80,7 @@ for current in subjs_name:
         sitk.WriteImage(Rec, struct_dir+'/Recurrence_fixOrigDir.nii')
     
     #Resample Std_dose image to same resolution as dose prescription
-    Std_dose = Resample_image(Std_dose, DPresc, sitk.sitkLinear)
+    # Std_dose = Resample_image(Std_dose, DP_dose, sitk.sitkLinear)
     # sitk.WriteImage(Std_dose, dose_dir+'/PHYS_TOT_inCT.nii')
     
     #%%Calculate stats for contours
@@ -94,11 +95,11 @@ for current in subjs_name:
 
     #Calculate mean dose in targeted recurrence volume
     Std_dose_trec_mean = getMeanRoi(Tar_rec, Std_dose)
-    DPresc_trec_mean = getMeanRoi(Tar_rec, DPresc)
+    DP_dose_trec_mean = getMeanRoi(Tar_rec, DP_dose)
     
     #Calculate max dose in targeted recurrence volume
     Std_dose_trec_max = getMaxRoi(Tar_rec, Std_dose)
-    DPresc_trec_max = getMaxRoi(Tar_rec, DPresc)
+    DP_dose_trec_max = getMaxRoi(Tar_rec, DP_dose)
     
     #Calculate 95% isodose contours
     SDose_PTV_HD = generate_mask(Std_dose, PTV_HD)   
@@ -119,6 +120,12 @@ for current in subjs_name:
     Vol_Rec95HD = round(getVolumeRoi(Rec_inIso95HD, Std_dose))
     Perc_Rec95HD = (Vol_Rec95HD/Vol_Rec)*100
     
+    #Calculate % volume of recurrence in Iso95 LD contour
+    Rec_inIso95LD = (Rec+Iso95_LD)>1
+    sitk.WriteImage(Rec_inIso95LD, struct_dir+'/Rec_inIso95LD.nii')
+    Vol_Rec95LD = round(getVolumeRoi(Rec_inIso95LD, Std_dose))
+    Perc_Rec95LD = (Vol_Rec95LD/Vol_Rec)*100
+    
     #Calculate % volume of recurrence in Iso95 HDLD margins
     Rec_inIso95margins = (Rec+Iso95_HDLD_margins)>1
     sitk.WriteImage(Rec_inIso95margins, struct_dir+'/Rec_inIso95margins.nii')
@@ -126,8 +133,8 @@ for current in subjs_name:
     Perc_Rec95margins = (Vol_Rec95margins/Vol_Rec)*100
 
     #%%Save statistics of various VOIs            
-    sheet_df = {'Subject_ID': subj_name, '% Vol of recurrence in PTV':Perc_targeted_rec, 'Mean std dose in targeted recurrence volume [Gy]':Std_dose_trec_mean, 'Max std dose in targeted recurrence volume [Gy]':Std_dose_trec_max, 'Mean DP dose in targeted recurrence volume [Gy]':DPresc_trec_mean, 'Max DP dose in targeted recurrence volume [Gy]':DPresc_trec_max, '% vol of recurrence within PTV_HD receiving 95% of prescribed HD':Perc_Rec95HD, '% vol of recurrence within PTV_LD receiving 95% of prescribed LD':Perc_Rec95margins}
-    df1 = pd.DataFrame(sheet_df, index=[0], columns=['Subject_ID', '% Vol of recurrence in PTV', 'Mean std dose in targeted recurrence volume [Gy]', 'Max std dose in targeted recurrence volume [Gy]', 'Mean DP dose in targeted recurrence volume [Gy]', 'Max DP dose in targeted recurrence volume [Gy]', '% vol of recurrence within PTV_HD receiving 95% of prescribed HD', '% vol of recurrence within PTV_LD receiving 95% of prescribed LD']) 
+    sheet_df = {'Subject_ID': subj_name, '% Vol of recurrence in PTV':Perc_targeted_rec, 'Mean std dose in targeted recurrence volume [Gy]':Std_dose_trec_mean, 'Max std dose in targeted recurrence volume [Gy]':Std_dose_trec_max, 'Mean DP dose in targeted recurrence volume [Gy]':DP_dose_trec_mean, 'Max DP dose in targeted recurrence volume [Gy]':DP_dose_trec_max, '% vol of recurrence within PTV_HD receiving 95% of prescribed HD':Perc_Rec95HD, '% vol of recurrence within PTV_LD receiving 95% of prescribed LD':Perc_Rec95LD, '% vol of recurrence within PTV_HDLD margins receiving 95% of prescribed dose':Perc_Rec95margins}
+    df1 = pd.DataFrame(sheet_df, index=[0], columns=['Subject_ID', '% Vol of recurrence in PTV', 'Mean std dose in targeted recurrence volume [Gy]', 'Max std dose in targeted recurrence volume [Gy]', 'Mean DP dose in targeted recurrence volume [Gy]', 'Max DP dose in targeted recurrence volume [Gy]', '% vol of recurrence within PTV_HD receiving 95% of prescribed HD', '% vol of recurrence within PTV_LD receiving 95% of prescribed LD', '% vol of recurrence within PTV_HDLD margins receiving 95% of prescribed dose']) 
     df = df.append(df1, ignore_index=True)
     
 #%%Sava data to excel spreadsheet    
