@@ -40,9 +40,9 @@ def DICOMseries_toNII(dcm_dir_path, nii_filepath, headers_filepath):
         json.dump(headers, fp)
 
     
-nii_dir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SacralChordoma_CNAO/nifti/'
-MRI_dir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SacralChordoma_CNAO/dicom/MRI/'
-RT_dir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SacralChordoma_CNAO/dicom/RTDATA/'
+nii_dir = 'path/to/output/nifti/directory/'
+MRI_dir = 'path/to/dicom/MRI/directory/'
+RT_dir = 'path/to/dicom/RTDATA/directory'
 
 #%%Convert MRI data
 
