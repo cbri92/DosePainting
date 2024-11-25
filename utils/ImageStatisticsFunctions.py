@@ -2,7 +2,7 @@
 """
 Created on Fri Jan 22 15:23:04 2021
 
-@author: cbri3325
+@author: Caterina Brighi
 """
 
 
