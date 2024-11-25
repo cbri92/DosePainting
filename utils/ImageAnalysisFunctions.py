@@ -2,7 +2,7 @@
 """
 Created on Tue May  5 11:17:17 2020
 
-@author: s4451992
+@author: Caterina Brighi
 """
 
 #%% Set working environments 
