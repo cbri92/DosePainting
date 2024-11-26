@@ -3,6 +3,8 @@
 Created on Mon Dec 12 10:33:42 2022
 
 @author: Caterina Brighi
+
+This script converts MRI, CT, RTdose and RTstruct data from dicom format to nifti format.
 """
 
 import os
