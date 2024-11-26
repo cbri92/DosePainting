@@ -5,9 +5,10 @@ Created on Thu Feb  2 09:50:05 2023
 @author: Caterina Brighi
 
 This script:
-    1. applies the inverse transfor to bring the dose prescriptions from DWI to CT space
-    2. assigns values of min dose to PTV margins (PTV- CTV)
-    3. converts the dose prescriptions into inverse dose prescriptions 
+    1. applies the inverse transfor to bring the dose painting prescriptions from DWI to CT space
+    2. assigns values of 74 Gy dose to CTV margins (CTV-GTV)
+    3. converts the dose painting prescriptions into inverse dose painting prescriptions
+    4. converts the inverse dose paitning prescriptions from nifti to dicom RT dose files
 """
 
 
@@ -21,10 +22,10 @@ from ConvertNii_ToDoseFiles import * #Use this functions only when using the dic
 
 #%% Set Working directory
         
-data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SBC_Tutti/' #Set working directory
+data_supradir = 'path/to/pathients/data/supra/directory/' #Set working directory
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
-subjs_name = [ 'AIRC24946_R032', 'AIRC24946_R035','AIRC24946_R037','AIRC24946_R039','AIRC24946_R041','AIRC24946_R045','AIRC24946_R048','AIRC24946_R051','AIRC24946_R052','AIRC24946_R054' ] #Create a list of subjects names
+subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
 
 #%%Create a for loop to perform image analysis on each subject sequentially
 
@@ -62,7 +63,7 @@ for current in subjs_name:
     #%%Apply inverse transform to Dose prescriptions to bring them in CT space from DWI space
     DP_inCT = sitk.Resample(DP_inDWI, CT, inverse_transform, sitk.sitkNearestNeighbor)
    
-    #%%Calculate Max and Min dose prescription values    
+    #%%Calculate Maximum dose prescription values    
     Stats_dose = getNonZeroStats(DP_inCT)
     MAX_dose = int(Stats_dose['Max intensity'])
     
@@ -70,8 +71,6 @@ for current in subjs_name:
     Inv_DP_inCT = MAX_dose-DP_inCT
     
     #%%Read CTV HD
-    
-    #Read PTV HD
     for filename in glob.glob(subj_dir+'/RTSTRUCT/'+'CTV*'):
         if (('CTV_7' in filename) or ('CTV7' in filename) or ('CTV_high' in filename) or ('CTV_HD' in filename)):
             CTV_HD_path = filename
@@ -79,7 +78,6 @@ for current in subjs_name:
     CTV_HD = sitk.ReadImage(CTV_HD_path) #read PTV HD
   
     #%%Generate HD margins
-    
     Valid_presc = DP_inCT>0
     HD_margin = (CTV_HD-Valid_presc)>0
     sitk.WriteImage(HD_margin, prsc_dir+'/HD_margin.nii')
