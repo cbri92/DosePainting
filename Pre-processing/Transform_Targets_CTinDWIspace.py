@@ -4,7 +4,7 @@ Created on Fri Dec 2 11:01:47 2022
 
 @author: Caterina Brighi
 
-This script register GTV, CTV and CT image into DWI MRI space.
+This script registers the GTV, CTV and CT image into DWI MRI space.
 """
 
 import numpy as np
