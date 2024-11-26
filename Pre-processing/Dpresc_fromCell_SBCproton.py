@@ -69,12 +69,13 @@ RBEmin = 1.18
 
 a = (RBEmax*alpha_x)
 b = (beta_x*(RBEmin**2))
+
 #%% Set Working directory
         
-data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SBC_Tutti/' #Set working directory
+data_supradir = 'path/to/pathients/data/supra/directory/' #Set working directory
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
-subjs_name = [ 'AIRC24946_R032', 'AIRC24946_R035','AIRC24946_R037','AIRC24946_R039','AIRC24946_R041','AIRC24946_R045','AIRC24946_R048','AIRC24946_R051','AIRC24946_R052','AIRC24946_R054' ] #Create a list of subjects names
+subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
 
 #%%Create a for loop to perform image analysis on each subject sequentially
 
