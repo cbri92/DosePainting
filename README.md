@@ -24,10 +24,21 @@ To be able to use the above scipts you need to have the following python package
 - pydicom
 - platipy
 ```
+**Repository Structure** 
+There are three directories in this repository:
 
-IMPORTANT: You always need to have the *ImageAnalysisFunctions.py* and *ImageStatisticsFunctions.py* files, which you can find in the utils folder, in the same folders as the other .py files when running pre-processing and analysis steps (i.e. Pre-processing and Analysis folders). 
+***utils***
+This repository contains three important scripts that contain functions used througout the pre-processing and analysis pipelines. Please, make sure to copy these scripts into the *Pre-processing* and the *Analysis* folders before running the scripts. 
 
-**Directory Structure** 
+***Pre-processing***
+This repository contains the scripts used to pre-process the MRI and RT patient data.
+
+***Analysis***
+This repository contains the scripts used to analyse the baseline and dose painting output data.
+
+IMPORTANT: Run the scripts of the *Pre-processing* folder first, then run the scripts of the *Analysis* folder. You always need to have the *ImageAnalysisFunctions.py*, *ImageStatisticsFunctions.py* and *ConvertNii_ToDoseFiles.py* files, which you can find in the *utils* folder, in the same folders as the other .py files when running pre-processing and analysis steps (i.e. Pre-processing and Analysis folders). 
+
+**Patient Data Directory Structure** 
 The original data directory before running the pre-processing steps should be the following:
 ```
 Data supradirectory
