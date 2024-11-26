@@ -3,8 +3,9 @@
 Created on Fri Jan 22 15:23:04 2021
 
 @author: Caterina Brighi
-"""
 
+This script contains several image statistics functions used throughout the project.
+"""
 
 #%% Set working environments 
 
