@@ -30,7 +30,7 @@ To be able to use the above scipts you need to have the following python package
 
 **Repository Structure** 
 
-There are four directories in this repository:
+There are three directories in this repository:
 
 ***utils***
 
@@ -43,10 +43,6 @@ This repository contains the scripts used to pre-process the MRI and RT patient 
 ***Analysis***
 
 This repository contains the scripts used to analyse the baseline and dose painting output data.
-
-***dev***
-
-This repository contains scripts generated during the project, that are not needed to reproduce the results included in the publication. Please, disregard this folder.
 
 
 ****IMPORTANT****: Run the scripts of the *Pre-processing* folder first, then run the scripts of the *Analysis* folder. You always need to have the *ImageAnalysisFunctions.py*, *ImageStatisticsFunctions.py* and *ConvertNii_ToDoseFiles.py* files, which you can find in the *utils* folder, in the same folders as the other .py files when running pre-processing and analysis steps (i.e. Pre-processing and Analysis folders). 
