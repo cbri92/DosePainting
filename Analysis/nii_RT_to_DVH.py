@@ -3,6 +3,8 @@
 Created on Mon Oct 18 14:33:01 2021
 
 @author: Caterina Brighi
+
+This script derives DVH data for RT targets and organs at risk from the nifti dose and RT structures files for both the dose painting and the baseline plans.
 """
 
 from ImageStatisticsFunctions import allVoxInt
@@ -14,15 +16,18 @@ import pandas as pd
 import warnings
 import shutil
 
-data_supradir='/Users/cbri3325/Library/CloudStorage/OneDrive-TheUniversityofSydney(Staff)(2)/Caterina Brighi/Data/SBC_Tutti/'
+#%%Set path to patients directory
+
+data_supradir = 'path/to/pathients/data/supra/directory/' #Set working directory
+
 if not os.path.isdir(data_supradir):
     warnings.warn('invalid data_supradir supplied; quitting', stacklevel=2)
     sys.exit(1)
 
-# subjs_path = [f.path for f in os.scandir(data_supradir) if f.is_dir()] #Create a list of the paths to the subjects directories
-# subjs_name = [f.name for f in os.scandir(data_supradir) if f.is_dir()] #Create a list of subjects names
-subjs_name = [ "AIRC24946_R032","AIRC24946_R035","AIRC24946_R037","AIRC24946_R039","AIRC24946_R041","AIRC24946_R045","AIRC24946_R048","AIRC24946_R051","AIRC24946_R052","AIRC24946_R054" ] #Create a list of subjects names
+subjs_path = [f.path for f in os.scandir(data_supradir) if f.is_dir()] #Create a list of the paths to the subjects directories
+subjs_name = [f.name for f in os.scandir(data_supradir) if f.is_dir()] #Create a list of subjects names
 
+#Define OARs DVH files names
 tronco = ["Tronco.xlsx" ,"tronco.xlsx" , "tronco_encefalico.xlsx" , "Tronco_enc.xlsx"]
 chiasma = ["Chiasma.xlsx", "chiasma.xlsx"]
 nervo_ottico_sx = ["Nervo_ottico_sx.xlsx", "nervo_ottico_sx.xlsx", "nervo_ott_sx.xlsx", "Nervo_ott_sx.xlsx", "n_ottico_sx.xlsx"]
@@ -66,11 +71,11 @@ for current in subjs_name:
             warnings.warn(f'emptying subj_dir directory {subj_dir}', stacklevel=2)
             shutil.rmtree(subj_dir + '/DVH_files2')
         
-        os.mkdir(subj_dir + '/DVH_files2')
-        os.mkdir(subj_dir + '/DVH_files2/Dose_painting_4B')
-        os.mkdir(subj_dir + '/DVH_files2/Baseline_4B')
-        DP_DVH_dir = subj_dir + '/DVH_files2/Dose_painting_4B'
-        BL_DVH_dir = subj_dir + '/DVH_files2/Baseline_4B'
+        os.mkdir(subj_dir + '/DVH_files')
+        os.mkdir(subj_dir + '/DVH_files/Dose_painting_4B')
+        os.mkdir(subj_dir + '/DVH_files/Baseline_4B')
+        DP_DVH_dir = subj_dir + '/DVH_files/Dose_painting_4B'
+        BL_DVH_dir = subj_dir + '/DVH_files/Baseline_4B'
         
         #%%Generate DVH excel file for each structure
         
