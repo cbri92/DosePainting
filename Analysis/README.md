@@ -3,7 +3,7 @@
 ### Author: Caterina Brighi
 
 Analysis of the SBC patients radiotherapy planning data.
-For a correct analysis pipeline, run scripts following the tasks order Task 1 - Task 6. 
+For a correct analysis pipeline, run scripts following the tasks order Task 1 - Task 5. 
 
 #### Task 1: Convert RT dose plans from dicom to nifti: Conversion_RTplans_DICOM_to_nii.py
 
