@@ -6,6 +6,7 @@ Scripts for the use of MRI and RT data to derive heterogeneous dose prescription
 
 
 **Setup/Build/Install** 
+
 To be able to use the above scipts you need to have the following python packages intalled:
 
 ```
@@ -28,18 +29,23 @@ To be able to use the above scipts you need to have the following python package
 
 
 **Repository Structure** 
+
 There are four directories in this repository:
 
 ***utils***
+
 This repository contains three important scripts that contain functions used througout the pre-processing and analysis pipelines. Please, make sure to copy these scripts into the *Pre-processing* and the *Analysis* folders before running the scripts. 
 
 ***Pre-processing***
+
 This repository contains the scripts used to pre-process the MRI and RT patient data.
 
 ***Analysis***
+
 This repository contains the scripts used to analyse the baseline and dose painting output data.
 
 ***dev***
+
 This repository contains scripts generated during the project, that are not needed to reproduce the results included in the publication. Please, disregard this folder.
 
 
@@ -47,6 +53,7 @@ This repository contains scripts generated during the project, that are not need
 
 
 **Patient Data Directory Structure** 
+
 The original data directory before running the pre-processing steps should be the following:
 ```
 Data supradirectory
@@ -82,4 +89,5 @@ Data supradirectory
 
 
 **Citation**
+
 If you use code from this repository, please cite [to be added]
