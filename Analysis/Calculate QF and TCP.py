@@ -2,7 +2,12 @@
 """
 Created on Fri Jun 23 11:13:47 2023
 
-@author: cbri3325
+@author: Caterina Brighi
+
+This script:
+    1. calculates the Quality Factor (QF) between the dose planned and the dose prescribed in the GTV and CTV
+    2. generates QF maps in the GTV and CTV
+    3. estimates the Tumour Control Probability in the GTV and CTV
 """
 
 #%% Import functions 
@@ -32,7 +37,7 @@ beta = 0.058
 n = 37
 #%% Set Working directory
         
-data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SBC_Tutti/' #Set working directory
+data_supradir = 'path/to/pathients/data/supra/directory/' #Set working directory
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
 subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
