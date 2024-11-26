@@ -2,9 +2,10 @@
 """
 Created on Tue Feb 28 11:18:20 2023
 
-@author: cbri3325
-"""
+@author: Caterina Brighi
 
+This script registers the RBE dose image in DWI MRI space.
+"""
 
 import SimpleITK as sitk
 import os
@@ -20,10 +21,9 @@ def Resample_image(input_image, reference_image):
     output_image = resample.Execute(input_image)
     return output_image
 
-
 #%% Set Working directory
         
-data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SCB_Tutti/' #Set working directory
+data_supradir = 'path/to/pathients/data/supra/directory/' #Set working directory
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
 subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
