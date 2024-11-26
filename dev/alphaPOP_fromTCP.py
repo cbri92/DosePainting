@@ -72,12 +72,13 @@ def Func(x):
 #%%Import DVH info dataframe
 dvh_df = pd.read_excel('C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SacralChordoma_CNAO/DVH_info_GTV.xlsx', sheet_name='DVH stats')
 
+# N0 = 10000000
 N0 = dvh_df['N0'].to_numpy()
 D98 = dvh_df['D_98% [Gy]'].to_numpy()
 
 #%% Find alphaPOP through optimization function
 
-Np = len(N0)
+Np = len(D98)
 x = brentq(Func, 0.06, 2.0)
 alphaPOP=x
 
