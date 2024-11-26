@@ -8,7 +8,6 @@ This script is used to take information about cellularity, alpha and beta and us
 to derive patient-specific dose prescriptions by means of a TCP model (poissonian, LQ).
 """
 
-
 #%% Import functions 
 
 import SimpleITK as sitk
