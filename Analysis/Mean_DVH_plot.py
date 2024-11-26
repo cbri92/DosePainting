@@ -4,6 +4,8 @@
 Created on Wed Nov 13 14:03:28 2024
 
 @author: Caterina Brighi
+
+This script generates mean DVH plots in the RT targets and in the organs at risk for the entire patients cohort for baseline and dose painting plans. The plots also contain the 25th and 75th percentile bands of the Volume %.
 """
 
 import os
@@ -13,15 +15,15 @@ import matplotlib.pyplot as plt
 
 #%% Set Working directory
         
-data_supradir = '/Users/cbri3325/Library/CloudStorage/OneDrive-TheUniversityofSydney(Staff)(2)/Caterina Brighi/Data/SBC_Tutti/' #Set working directory
+data_supradir = 'path/to/pathients/data/supra/directory/' #Set working directory
 
-if not os.path.exists(data_supradir+'Volumes_DVH2/'):
-    os.mkdir(data_supradir+'Volumes_DVH2/')
-out_dir = data_supradir+'Volumes_DVH2/'
-    
-subjs_name = [ "AIRC24946_R032","AIRC24946_R035","AIRC24946_R037","AIRC24946_R039","AIRC24946_R041","AIRC24946_R045","AIRC24946_R048","AIRC24946_R051","AIRC24946_R052","AIRC24946_R054" ] #Create a list of subjects names
-# subjs_name = ["AIRC24946_R032", "AIRC24946_R035"]
+subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
+subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
 
+if not os.path.exists(data_supradir+'Volumes_DVH/'):
+    os.mkdir(data_supradir+'Volumes_DVH/')
+out_dir = data_supradir+'Volumes_DVH/'
+ 
 tronco = ["Tronco.xlsx" ,"tronco.xlsx" , "tronco_encefalico.xlsx" , "Tronco_enc.xlsx"]
 chiasma = ["Chiasma.xlsx", "chiasma.xlsx"]
 nervo_ottico_sx = ["Nervo_ottico_sx.xlsx", "nervo_ottico_sx.xlsx", "nervo_ott_sx.xlsx", "Nervo_ott_sx.xlsx", "n_ottico_sx.xlsx"]
