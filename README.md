@@ -58,7 +58,7 @@ Data supradirectory
       xf_T2onDWI.txt
  ```       
 
-NOTE: The nifti files in the MRI/baseline/micro folder are calculated elsewhere by applying a model to convert DWI MRI ADC data into cellularity data (see publications: (https://doi.org/10.1002/mp.14689)![image](https://github.com/user-attachments/assets/dc1cb247-63bb-41e1-a0c3-e8851d97f4d7)). The text files in the regFiles folder are also generated in ITK-SNAP by performing a manual/semiautomated rigid registration of the CT to T2 image and of the T2 image to the DWI image.
+NOTE: The nifti files in the MRI/baseline/micro folder are calculated elsewhere by applying a model to convert DWI MRI ADC data into cellularity data (see publications: (https://doi.org/10.1002/mp.14689). The text files in the regFiles folder are also generated in ITK-SNAP by performing a manual/semiautomated rigid registration of the CT to T2 image and of the T2 image to the DWI image.
 
 **Citation**
 If you use code from this repository, please cite [to be added]
