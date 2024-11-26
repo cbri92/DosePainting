@@ -2,7 +2,7 @@
 
 **Author**: Caterina Brighi
 
-Scripts for the use of MRI data to derive heterogeneous dose prescriptions within the radiotherapy target, using patient-specific TCP data.
+Scripts for the use of MRI and RT data to derive heterogeneous dose prescriptions within the radiotherapy target, using patient-specific cellularity data.
 
 **Setup/Build/Install** 
 To be able to use the above scipts you need to have the following python packages intalled:
@@ -25,62 +25,40 @@ To be able to use the above scipts you need to have the following python package
 - platipy
 ```
 
-You also need to have the *ImageAnalysisFunctions.py*, *ImageResultsVisualizationFunctions.py* and *ImageStatisticsFunctions.py* files in the same folders as the other .py files of this repo. 
-
-**Usage** 
-1. *dicom2nii.py* - this scripts convert the patients dicom files (MRI, RTSTRUCT, RTDOSE, CT) into nifti files.
-2. *RegistrationCT_T2_DWI.py* - this script is used to register CT images to T2 MRI image space, and then to DWI image space, by means of a rigid registration using SimpleITK.
-3. *alpha_beta_Protons.py* - this script is used to derive alpha and beta maps from maps of LET and PHYS dose, by applying the model developed in the publication [McNamara AL, Schuemann J, Paganetti H. A phenomenological relative biological effectiveness (RBE) model for proton therapy 
-based on all published in vitro cell survival data. Phys Med Biol [Internet]. 2015 Nov 7;60(21):8399–416.](https://iopscience.iop.org/article/10.1088/0031-9155/60/21/8399)).
-4. *Dpresc_fromTCP.py* - this script uses patient-specific information of tumour cellularity (derived from DWI-ADC data), alpha and beta to derive an optimal dose prescription based on a tumour control probability model (based on poissonian distribution and LQ model).
-5. *CTV_doseStats.py* - this script generates an excel spreadsheet with some statistics metrics calculated on the PHYS dose maps and the optimised dose prescriptions in the clinical target volume (CTV). These metrics include: Mean, std, median, max and min dose.
+IMPORTANT: You always need to have the *ImageAnalysisFunctions.py* and *ImageStatisticsFunctions.py* files, which you can find in the utils folder, in the same folders as the other .py files when running pre-processing and analysis steps (i.e. Pre-processing and Analysis folders). 
 
 **Directory Structure** 
-The original data directory before converting the dicom images to nifti with the *dicom2nii.py* script should be the following:
+The original data directory before running the pre-processing steps should be the following:
 ```
-Data
- dicom
-   MRI
-     Patient ID
-       Study date
-         MR
-           Sequence X
-             file1.dcm
-             file2.dcm
-             ...
-       ...
-     ...
-   RTDATA
-     Patient ID
-       CT
-         file1.dcm
-         file2.dcm
-         ...
-       LEM
-         file1.dcm
-         file2.dcm
-         ...
-       LET
-         file1.dcm
-         file2.dcm
-         ...
-       MKM
-         file1.dcm
-         file2.dcm
-         ...
-       PHYS
-         file1.dcm
-         file2.dcm
-         ...
-       PLAN
-         file1.dcm
-         file2.dcm
-         ...
-       RTSTRUCT
-         file1.dcm
-         file2.dcm
-         ...
+Data supradirectory
+  Patient directory
+    dicom
+      CT
+        file1.dcm
+        file2.dcm
+        ...
+      RTDOSE
+        RBE_TOT.dcm
+      RTSTRUCT
+        rtss_xxxx.dcm
+       
+    MRI
+      baseline
+        micro
+          ADC_50_400_1000.nii
+          cellApp_CORRECTED_CTV.nii
+          cellApp_CORRECTED_GTV.nii
+          gtv_voxel_ok_3D.nii
+          ctv_voxel_ok_3D.nii
+  
+   regFiles
+      rigid_CTonT2.txt
+      rigid_T2onDWI.txt
+      xf_CTonT2.txt
+      xf_T2onDWI.txt
  ```       
+
+NOTE: The nifti files in the MRI/baseline/micro folder are calculated elsewhere by applying a model to convert DWI MRI ADC data into cellularity data (see publication: ). The text files in the regFiles folder are also generated in ITK-SNAP by performing a manual/semiautomated rigid registration of the CT to T2 image and of the T2 image to the DWI image.
 
 **Citation**
 If you use code from this repository, please cite [to be added]
