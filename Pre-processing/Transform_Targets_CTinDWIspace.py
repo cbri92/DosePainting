@@ -15,7 +15,7 @@ import glob
 
 #%% Set Working directory
         
-data_supradir = 'path/to/pathients/data/supra/directory/' #Set working directory
+data_supradir = 'path/to/patients/data/supra/directory/' #Set working directory
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
 subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
