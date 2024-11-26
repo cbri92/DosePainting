@@ -1,0 +1,1 @@
+plastimatch convert --input RTSTRUCT/ --referenced-ct CT/ --output-dicom RTSTRUCT_new/ 
