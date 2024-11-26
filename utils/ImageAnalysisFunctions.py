@@ -3,6 +3,8 @@
 Created on Tue May  5 11:17:17 2020
 
 @author: Caterina Brighi
+
+This script contains several image analysis functions used throughout the project.
 """
 
 #%% Set working environments 
