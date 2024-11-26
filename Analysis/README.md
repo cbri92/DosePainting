@@ -14,9 +14,9 @@ For a correct analysis pipeline, run scripts following the tasks order Task 1 - 
 *    [x]  Calculate Quality Factor (QF) in GTV and CTV for both baseline and dose painting plans, and generate QF maps within the target volumes
 *    [x]  Calculate Tumour Control Probability (TCP) in GTV and CTV for both baseline and dose painting plans, using dose plans and cellularity data from DWI MRI 
 
-#### Task 3: Calculate basic dose statistics within the radiotherapy targets: CTV_GTV_doseStats.py
+#### Task 3: Calculate dose statistics within the radiotherapy targets: CTV_GTV_doseStats.py
 
-*    [x]  Calculate mean, median, minimum and maximum dose within the GTV and CTV for both baseline and dose painting plans
+*    [x]  Calculate mean, std, median, minimum, maximum, D95% and D1% dose within the GTV and CTV for both baseline and dose painting plans
 
 #### Task 4: Calculate DVH in radiotherapy targets and organs at risk: nii_RT_to_DVH.py
 
