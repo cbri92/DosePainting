@@ -4,12 +4,7 @@ Created on Fri Dec 2 11:01:47 2022
 
 @author: Caterina Brighi
 
-This script allows to derive maps of alpha and beta from maps of LET for skull based chordoma patients treated with proton therapy.
-The implementation leverages the modelling published in:
-    
-McNamara AL, Schuemann J, Paganetti H. A phenomenological relative biological effectiveness (RBE) model for proton therapy 
-based on all published in vitro cell survival data. Phys Med Biol [Internet]. 2015 Nov 7;60(21):8399–416. 
-Available from: https://iopscience.iop.org/article/10.1088/0031-9155/60/21/8399
+This script register GTV, CTV and CT image into DWI MRI space.
 """
 
 import numpy as np
@@ -20,7 +15,7 @@ import glob
 
 #%% Set Working directory
         
-data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SCB_Tutti/' #Set working directory
+data_supradir = 'path/to/pathients/data/supra/directory/' #Set working directory
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
 subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
@@ -47,7 +42,7 @@ for current in subjs_name:
     #Read CT
     CT = sitk.ReadImage(subj_dir+'ct.nii')
     
-    #%%Apply inverse registration to map alpha and beta maps to MRI space
+    #%%Apply inverse registration to GTV, CTV and CT image to DWI MRI space
 
     transform1 = sitk.ReadTransform(subj_dir+'regFiles/xf_CTonT2.txt')
     versor1 = sitk.VersorRigid3DTransform(transform1)
