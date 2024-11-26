@@ -5,11 +5,9 @@ Created on Thu Feb  2 09:50:05 2023
 @author: Caterina Brighi
 
 This script:
-    1. applies the inverse transfor to bring the dose prescriptions from DWI to CT space
-    2. assigns values of min dose to PTV margins (PTV- CTV)
-    3. converts the dose prescriptions into inverse dose prescriptions 
+    1. converts boost dose prescriptions into inverse boost dose prescriptions
+    2. converts inverse dose prescriptions from nifti to dicom format
 """
-
 
 #%% Import functions 
 
@@ -24,7 +22,7 @@ from ConvertNii_ToDoseFiles import * #Use this functions only when using the dic
 data_supradir = 'C:/Users/cbri3325/OneDrive - The University of Sydney (Staff)/Caterina Brighi/Data/SBC_Tutti/' #Set working directory
 
 subjs_path = [ f.path for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of the paths to the subjects directories
-subjs_name = [ 'AIRC24946_R032', 'AIRC24946_R035','AIRC24946_R037','AIRC24946_R039','AIRC24946_R041','AIRC24946_R045','AIRC24946_R048','AIRC24946_R051','AIRC24946_R052','AIRC24946_R054' ] #Create a list of subjects names
+subjs_name = [ f.name for f in os.scandir(data_supradir) if f.is_dir() ] #Create a list of subjects names
 
 #%%Create a for loop to perform image analysis on each subject sequentially
 
