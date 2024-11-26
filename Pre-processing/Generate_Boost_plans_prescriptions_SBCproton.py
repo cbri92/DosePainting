@@ -2,10 +2,10 @@
 """
 Created on Fri Jun 23 11:27:31 2023
 
-@author: cbri3325
+@author: Caterina Brighi
+
+This script generates dose prescription maps for the boost baseline plans in the CTV, receiving a uniform dose of radiation of 74 Gy.
 """
-
-
 
 #%% Import functions 
 
