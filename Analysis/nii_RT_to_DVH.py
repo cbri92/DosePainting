@@ -18,7 +18,7 @@ import shutil
 
 #%%Set path to patients directory
 
-data_supradir = 'path/to/pathients/data/supra/directory/' #Set working directory
+data_supradir = 'path/to/patients/data/supra/directory/' #Set working directory
 
 if not os.path.isdir(data_supradir):
     warnings.warn('invalid data_supradir supplied; quitting', stacklevel=2)
