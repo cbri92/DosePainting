@@ -6,7 +6,7 @@ Created on Thu Feb  2 09:50:05 2023
 
 This script:
     1. converts boost dose prescriptions into inverse boost dose prescriptions
-    2. converts inverse dose prescriptions from nifti to dicom format
+    2. converts inverse dose prescriptions from nifti to dicom RT dose files
 """
 
 #%% Import functions 
