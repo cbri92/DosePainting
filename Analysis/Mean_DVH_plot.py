@@ -35,7 +35,7 @@ temp_lobe_dx = ["LobeTemporal_R.xlsx", "lobo_temp_dx.xlsx"]
 carotide_sx = ["Carotide_sx.xlsx", "carotide_sx.xlsx", "carot_sx.xlsx", "carotide_sin.xlsx", "carotide_int_sx.xlsx"]
 carotide_dx = ["Carotide_dx.xlsx", "carotide_dx.xlsx", "carot_dx.xlsx", "carotide_int_dx.xlsx"]
 
-structures = ['GTV','CTV','Brainstem','Chiasm','Optic nerve L','Optic nerve R','Coclea L','Coclea R','Temporal lobe L','Temporal lobe R','Carotid L','Carotid R']
+structures = ['GTV','CTV','Brainstem','Chiasm','Optic nerve L','Optic nerve R','Cochlea L','Cochlea R','Temporal lobe L','Temporal lobe R','Carotid L','Carotid R']
 PLANS = ['DP', 'BL']
 
 for struc in structures:
@@ -112,17 +112,17 @@ for current,i in zip(subjs_name,range(len(subjs_name))):
                 
             elif f.name in coclea_sx:
                 print(f.name+' found')
-                coclea_l_f = f.path
-                coclea_l_name = "Coclea L"
-                files_paths.append(coclea_l_f)
-                structures_names.append(coclea_l_name)
+                cochlea_l_f = f.path
+                cochlea_l_name = "Cochlea L"
+                files_paths.append(cochlea_l_f)
+                structures_names.append(cochlea_l_name)
                 
             elif f.name in coclea_dx:
                 print(f.name+' found')
-                coclea_r_f = f.path
-                coclea_r_name = "Coclea R"
-                files_paths.append(coclea_r_f)
-                structures_names.append(coclea_r_name)
+                cochlea_r_f = f.path
+                cochlea_r_name = "Cochlea R"
+                files_paths.append(cochlea_r_f)
+                structures_names.append(cochlea_r_name)
                 
             elif f.name in temp_lobe_sx:
                 print(f.name+' found')
@@ -183,11 +183,11 @@ for current,i in zip(subjs_name,range(len(subjs_name))):
             #     Max_dose = 54
             # elif name in ['Optic nerve L', 'Optic nerve R']:
             #     Max_dose = 50
-            # elif name in ['Coclea L', 'Coclea R']:
+            # elif name in ['Cochlea L', 'Cochlea R']:
             #     Max_dose = 45
             # elif name in ['Temporal lobe L', 'Temporal lobe R']:
             #     Max_dose = 71
-            # elif name in ['Carotid L', 'TCarotid R']:
+            # elif name in ['Carotid L', 'Carotid R']:
             #     Max_dose = 75.5
             # # Max_dose = df[0].max()
             # Dose_perc = np.array((Dose/Max_dose)*100)
@@ -230,7 +230,7 @@ print('Saving study dataframes to excel spreadsheets and plot structures DVH')
 for STRUCT in structures:
     
     globals()[STRUCT+'_DP_df'].to_excel(globals()[STRUCT+'_DVH'], sheet_name='Dose painting', index=False)
-    globals()[STRUCT+'_BL_df'].to_excel(globals()[STRUCT+'_DVH'], sheet_name='Baseline', index=False)
+    globals()[STRUCT+'_BL_df'].to_excel(globals()[STRUCT+'_DVH'], sheet_name='Uniform', index=False)
     globals()[STRUCT+'_DVH'].close()   
     
     #Set percentile values to be equal to mean values where 25th percentile is >= mean, and where 75th percentile is < mean
@@ -242,7 +242,7 @@ for STRUCT in structures:
     colors = ["#632de9", "#8e82fe", "#13eac9", "#7bf2da", "#f97306", "#ffb07c", "#15b01a", "#6fc276"] 
     plt.plot(globals()[STRUCT+'_DP_df']['Dose [Gy]'], globals()[STRUCT+'_DP_df']['Mean Volume [%]'], label='Dose painting', color=colors[6], linewidth=3)
     plt.fill_between(globals()[STRUCT+'_DP_df']['Dose [Gy]'], globals()[STRUCT+'_DP_df']['25th percentile Volume [%]'], globals()[STRUCT+'_DP_df']['75th percentile Volume [%]'],alpha=0.4, edgecolor=colors[6], facecolor=colors[7])
-    plt.plot(globals()[STRUCT+'_BL_df']['Dose [Gy]'], globals()[STRUCT+'_BL_df']['Mean Volume [%]'], label='Baseline', color=colors[4], linewidth=3)
+    plt.plot(globals()[STRUCT+'_BL_df']['Dose [Gy]'], globals()[STRUCT+'_BL_df']['Mean Volume [%]'], label='Uniform', color=colors[4], linewidth=3)
     plt.fill_between(globals()[STRUCT+'_BL_df']['Dose [Gy]'], globals()[STRUCT+'_BL_df']['25th percentile Volume [%]'], globals()[STRUCT+'_BL_df']['75th percentile Volume [%]'],alpha=0.4, edgecolor=colors[4], facecolor=colors[5])
     plt.legend(loc='best', fontsize=15)
     plt.xlabel('Dose [Gy]',fontsize=15)
