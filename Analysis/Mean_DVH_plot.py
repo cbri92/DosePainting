@@ -28,8 +28,8 @@ tronco = ["Tronco.xlsx" ,"tronco.xlsx" , "tronco_encefalico.xlsx" , "Tronco_enc.
 chiasma = ["Chiasma.xlsx", "chiasma.xlsx"]
 nervo_ottico_sx = ["Nervo_ottico_sx.xlsx", "nervo_ottico_sx.xlsx", "nervo_ott_sx.xlsx", "Nervo_ott_sx.xlsx", "n_ottico_sx.xlsx"]
 nervo_ottico_dx = ["Nervo_ottico_dx.xlsx", "nervo_ottico_dx.xlsx", "nervo_ott_dx.xlsx", "Nervo_ott_dx.xlsx","n_ottico_dx.xlsx"]
-coclea_sx = ["Coclea_SX.xlsx", "coclea_sx.xlsx","Coclea_sx.xlsx", "coclea_sin.xlsx"]
-coclea_dx = ["Coclea_DX.xlsx", "coclea_dx.xlsx", "Coclea_dx.xlsx"]
+cochlea_sx = ["Coclea_SX.xlsx", "coclea_sx.xlsx","Coclea_sx.xlsx", "coclea_sin.xlsx"]
+cochlea_dx = ["Coclea_DX.xlsx", "coclea_dx.xlsx", "Coclea_dx.xlsx"]
 temp_lobe_sx = ["LobeTemporal_L.xlsx", "lobo_temp_sx.xlsx"]
 temp_lobe_dx = ["LobeTemporal_R.xlsx", "lobo_temp_dx.xlsx"]
 carotide_sx = ["Carotide_sx.xlsx", "carotide_sx.xlsx", "carot_sx.xlsx", "carotide_sin.xlsx", "carotide_int_sx.xlsx"]
@@ -110,14 +110,14 @@ for current,i in zip(subjs_name,range(len(subjs_name))):
                 files_paths.append(opt_nerv_r_f)
                 structures_names.append(opt_nerv_r_name)
                 
-            elif f.name in coclea_sx:
+            elif f.name in cochlea_sx:
                 print(f.name+' found')
                 cochlea_l_f = f.path
                 cochlea_l_name = "Cochlea L"
                 files_paths.append(cochlea_l_f)
                 structures_names.append(cochlea_l_name)
                 
-            elif f.name in coclea_dx:
+            elif f.name in cochlea_dx:
                 print(f.name+' found')
                 cochlea_r_f = f.path
                 cochlea_r_name = "Cochlea R"
