@@ -56,20 +56,6 @@ def set_mask_value(image, mask, value):
                      sitk.InvertIntensity(msk32, maximum=1.0) + 
                      msk32*value, image.GetPixelID())
 
-#%%Set alpha and beta particle-cell line specific values
-
-#Set alpha/beta photons
-alpha_beta_x = 2.4 #Gy for chordomas
-alpha_x = 0.1 #Gy-1
-beta_x = alpha_x/alpha_beta_x #Gy-2
-
-#Values RBEmax and RBEmin for proton on chordoma cells taken from paper Paganetti, International Journal of Radiation Oncology*Biology*Physics, 2022, 112(1), 222-236.
-RBEmax = 1.59
-RBEmin = 1.18
-
-a = (RBEmax*alpha_x)
-b = (beta_x*(RBEmin**2))
-
 #%% Set Working directory
         
 data_supradir = 'path/to/patients/data/supra/directory/' #Set working directory
@@ -113,11 +99,6 @@ for current in subjs_name:
 
     cell_dens = allVoxInt(cell_map, GTV) #Define array of values with cellular density>0
     N0 = cell_dens*voxel_volume #Multiply the values of cellular density per voxel by the volume of one voxel to obtain the number of cells per voxel
-    
-    alpha=np.full(len(N0), a, dtype=np.float32)
-    beta=np.full(len(N0), b, dtype=np.float32)
-    
-    n=37 #Number of fractions
 
 #%%Scale values of dose inside the GTV linearly with Cellularity according to: Di = Dmin + [(Dmax-Dmin)*(Celli-Cellmin)]/(Cellmax-Cellmin)
     
@@ -142,10 +123,4 @@ for current in subjs_name:
     
     dose_img_final = set_mask_value(dose_img, GTV_outliers, Dmin)
     sitk.WriteImage(dose_img_final, out_dir+'/Dose_painted_GTV_final.nii')
-    
-    #%% Compare new TCP with TCP that would be obtained by deliverying an homogeneous dose boost to the GTV equal to what prescribed in original plans
-    TCP_heter =np.prod( np.exp( - N0 * np.exp(-alpha*dose-(beta*(dose**2))/n))) #TCP obtained with optimised heterogeneous dose distribution
-    TCP_boost = np.prod( np.exp( - N0 * np.exp(-alpha*Dmin-(beta*(Dmin**2))/n))) # TCP with optimised homogeneous dose boost to entire GTV
-    print('TCP optimised heterogeneous dose plan: ',TCP_heter)
-    print('TCP optimised homogeneous max dose boost plan: ',TCP_boost)
     
