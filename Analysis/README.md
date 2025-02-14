@@ -22,6 +22,7 @@ For a correct analysis pipeline, run scripts following the tasks order Task 1 - 
 
 *    [x]  Calculate the DVH in radiotherapy targets and organs at risk for both uniform and dose painting plans
 
-#### Task 5: Generate mean DVH plots for the entire patients' cohort in radiotherapy targets and organs at risk: Mean_DVH_plot.py
+#### Task 5: Generate mean DVH plots for the entire patients' cohort in radiotherapy targets and organs at risk: Mean_DVH_plot.py and Mean_DVH_plot_55-80.py
 
-*    [x]  Generate mean DVH plots for both uniform and dose painting plans for the entire patients' cohort in radiotherapy targets and organs at risk. Also plot 25th and 75th percentile lines for percentage Volume. 
+*    [x]  Generate mean DVH plots for both uniform and dose painting plans for the entire patients' cohort in radiotherapy targets and organs at risk. Also plot 25th and 75th percentile lines for percentage Volume.
+*    [x]  Generate mean DVH plots for both uniform and dose painting plans for the entire patients' cohort in radiotherapy targets and organs at risk, zooming in the dose range 55-80 Gy(RBE).
