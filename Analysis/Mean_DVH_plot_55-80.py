@@ -12,8 +12,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #%% Set Working directory
-        
-data_supradir = '/Users/cbri3325/Library/CloudStorage/OneDrive-TheUniversityofSydney(Staff)(2)/Caterina Brighi/Data/SBC_Tutti/' #Set working directory
+
+data_supradir = 'path/to/patients/data/supra/directory/' #Set working directory
 DVH_dir = data_supradir+'Volumes_DVH/'
 
 #%%Read GTV dataframe from excel spreadsheets and plotting DVH plot
