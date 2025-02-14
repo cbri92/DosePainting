@@ -13,9 +13,9 @@ For a correct preprocessing pipeline, run scripts following the tasks order Task
 
 *    [x]  Convert MRI, RTDOSE, RTSTRUCT and CT DICOM data to NIFTI format
 
-#### Task 3: Coregister RT data to DWI MRI space: Transform_RBEinDWI.py, Transform_Transform_Targets_CTinDWIspace.py
+#### Task 3: Coregister RT data to DWI MRI space: Transform_Targets_CTinDWIspace.py
 
-*    [x]  Register CT images, RBE dose and GTV and CTV to T2 MRI image space, and then to DWI image space, by means applying given transformation matrices
+*    [x]  Register CT image, GTV and CTV to T2 MRI image space, and then to DWI image space, by means applying given transformation matrices
 
 #### Task 4: Patient's specific dose painting prescriptions derivation: Dpresc_fromCell_SBCproton.py
 
