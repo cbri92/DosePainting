@@ -42,7 +42,7 @@ This repository contains the scripts used to pre-process the MRI and RT patient 
 
 ***Analysis***
 
-This repository contains the scripts used to analyse the baseline and dose painting output data.
+This repository contains the scripts used to analyse the uniform and dose painting output data.
 
 
 ****IMPORTANT****: Run the scripts of the *Pre-processing* folder first, then run the scripts of the *Analysis* folder. You always need to have the *ImageAnalysisFunctions.py*, *ImageStatisticsFunctions.py* and *ConvertNii_ToDoseFiles.py* files, which you can find in the *utils* folder, in the same folders as the other .py files when running pre-processing and analysis steps (i.e. Pre-processing and Analysis folders). 
