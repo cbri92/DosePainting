@@ -24,17 +24,19 @@ def calc_TCP(N0, dose, alpha, beta, n):
     
     '''This function calculates the tumour control probability given cellularity, dose, alpha, beta and n of fractions.
     N0: flattened array of cellularity values
-    dose: flattened array of dose values
+    dose: flattened array of RBE dose values
     alpha: radiosensitivity parameter for that specific ion and cell line
     beta: radiosensitivity parameter for that specific ion and cell line
     n: number of fractions'''
     
     return np.prod( np.exp( - N0 * np.exp(-alpha*dose-(beta*(dose**2))/n)))
 
-#Parameters for proton therapy and chordoma cell lines
-alpha = 0.159
-beta = 0.058
+#Alpha and beta photons and n of fractions: we used a and b photons as per dose we are using the RBE dose
+a_b = 2.4 #Gy
+alpha = 0.1 #Gy^-1
+beta = alpha/a_b
 n = 37
+
 #%% Set Working directory
         
 data_supradir = 'path/to/patients/data/supra/directory/' #Set working directory
