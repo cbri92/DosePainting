@@ -86,4 +86,4 @@ Data supradirectory
 
 **Citation**
 
-If you use code from this repository, please cite [to be added]
+If you use code from this repository, please cite [![DOI](https://zenodo.org/badge/580071600.svg)](https://doi.org/10.5281/zenodo.14930761)
